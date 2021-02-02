@@ -1,11 +1,11 @@
-from time import timezone
-
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
     UserManager,
 )
+
+from .managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -20,4 +20,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["nickname"]
-    objects = UserManager()
+    objects = CustomUserManager()
