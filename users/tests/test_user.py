@@ -1,18 +1,24 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.core.validators import ValidationError
+from django.urls import reverse
+from django.contrib.auth import get_user_model
 
-from users import models
+SIGN_UP_URL = reverse("sign-up")
+
+
+def create_user(**params):
+    return get_user_model().objects.create_user(**params)
 
 
 class ModelTests(TestCase):
     """Model test"""
 
-    def test_create_new_user_successfully(self):
-        """Test creating a new user successfully"""
+    def test_create_new_user_success(self):
+        """Test creating a new user success"""
         email = "test@gmail.com"
         nickname = "test name"
         password = "password123@"
-        user = models.User.objects.create_user(
+        user = get_user_model().objects.create_user(
             email=email, nickname=nickname, password=password
         )
 
@@ -26,7 +32,7 @@ class ModelTests(TestCase):
         """Test creating a new user with invalid email"""
 
         with self.assertRaises(ValidationError):
-            models.User.objects.create_user(
+            get_user_model().objects.create_user(
                 email=None,
                 nickname="test name",
                 password="password123@",
@@ -39,7 +45,7 @@ class ModelTests(TestCase):
         nickname = "admin"
         password = "superuserpassword123@"
 
-        superuser = models.User.objects.create_superuser(
+        superuser = get_user_model().objects.create_superuser(
             email=email,
             nickname=nickname,
             password=password,
@@ -47,3 +53,62 @@ class ModelTests(TestCase):
 
         self.assertTrue(superuser.is_staff)
         self.assertTrue(superuser.is_superuser)
+
+
+class PublicUserTests(TestCase):
+    """Public user test"""
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_create_valid_user_success(self):
+        """Test creating user with valid payload is successful"""
+
+        payload = {
+            "email": "test@gmail.com",
+            "nickname": "testname",
+            "password1": "userpass123@",
+            "password2": "userpass123@",
+        }
+
+        res = self.client.post(SIGN_UP_URL, payload)
+
+        user = get_user_model().objects.get(email=payload["email"])
+        self.assertEqual(res.status_code, 302)
+        self.assertTrue(user.check_password(payload["password1"]))
+
+    def test_user_exist(self):
+        """Test creating user that already exists fails"""
+
+        payload = {
+            "email": "test@gmail.com",
+            "nickname": "John",
+            "password1": "userpass123@",
+            "password2": "userpass123@",
+        }
+
+        create_user(
+            **{
+                "email": "test@gmail.com",
+                "nickname": "John",
+                "password": "userpass123@",
+            }
+        )
+
+        self.client.post(SIGN_UP_URL, payload)
+
+        self.assertEqual(1, get_user_model().objects.count())
+
+    def test_paasword_too_short(self):
+        payload = {
+            "email": "test@gmail.com",
+            "nickname": "John",
+            "password1": "123",
+            "password2": "123",
+        }
+
+        self.client.post(SIGN_UP_URL, payload)
+
+        self.assertFalse(
+            get_user_model().objects.filter(email=payload["email"]).exists()
+        )
