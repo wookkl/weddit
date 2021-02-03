@@ -1,1 +1,12 @@
-<div>header</div>
+<header>
+    <div>
+        
+        {% if user.is_authenticated %}
+            <a href="#">Log out</a>
+        {% else %}
+            <a href="{% url 'sign-up' %}">Sign up</a>
+            <a href="#">Log in</a>
+        {% endif %}
+        <a href="{% url 'user:detail' user.nickname %}">My page</a>
+    </div>
+</header>

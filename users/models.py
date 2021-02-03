@@ -12,7 +12,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """User model definition"""
 
     email = models.EmailField(max_length=255, unique=True)
-    nickname = models.CharField(max_length=255, unique=True)
+    nickname = models.CharField(max_length=20, unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

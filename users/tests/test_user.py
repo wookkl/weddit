@@ -4,6 +4,11 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 SIGN_UP_URL = reverse("sign-up")
+LOGOUT_URL = reverse("logout")
+
+
+def get_user_retrieve_url(nickname):
+    return reverse("user:detail", kwargs={"nickname": nickname})
 
 
 def create_user(**params):
@@ -112,3 +117,23 @@ class PublicUserTests(TestCase):
         self.assertFalse(
             get_user_model().objects.filter(email=payload["email"]).exists()
         )
+
+
+class PrivateUserTests(TestCase):
+    """Private user test"""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = create_user(
+            **{
+                "email": "test@gmail.com",
+                "nickname": "test name",
+                "password": "password123@",
+            }
+        )
+        self.client.force_login(self.user)
+
+    def test_retrieve_user(self):
+        res = self.client.get(get_user_retrieve_url(self.user.nickname))
+
+        self.assertEqual(res.status_code, 200)
