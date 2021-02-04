@@ -15,20 +15,20 @@ alphanumeric = RegexValidator(
 class CustomUserCreationForm(forms.Form):
 
     email = forms.CharField(
-        widget=forms.EmailInput(attrs={"placeholder": _("Enter email")})
+        widget=forms.EmailInput(attrs={"placeholder": _("ENTER EMAIL")})
     )
     nickname = forms.CharField(
         min_length=4,
         max_length=20,
-        widget=forms.TextInput(attrs={"placeholder": _("Enter nickname")}),
+        widget=forms.TextInput(attrs={"placeholder": _("ENTER NICKNAME")}),
         validators=[alphanumeric],
     )
     password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": _("Enter password")})
+        widget=forms.PasswordInput(attrs={"placeholder": _("ENTER PASSWORD")})
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"placeholder": _("Confirm password")},
+            attrs={"placeholder": _("CONFIRM PASSWORD")},
         )
     )
 
@@ -57,7 +57,7 @@ class CustomUserCreationForm(forms.Form):
     def save(self, commit=True):
         user = get_user_model().objects.create_user(
             email=self.cleaned_data["email"],
-            nickname=self.cleaned_data["nickname"].lower(),
+            nickname=self.cleaned_data["nickname"],
         )
         user.set_password(self.cleaned_data["password1"])
         user.save()
@@ -68,12 +68,12 @@ class LoginForm(forms.Form):
     email = forms.CharField(
         required=True,
         widget=forms.EmailInput(
-            attrs={"placeholder": _("Enter email")},
+            attrs={"placeholder": _("ENTER EMAIL")},
         ),
     )
     password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={"placeholder": _("Enter password")}),
+        widget=forms.PasswordInput(attrs={"placeholder": _("ENTER PASSWORD")}),
     )
 
     def clean(self):
@@ -89,3 +89,36 @@ class LoginForm(forms.Form):
             self.add_error(
                 "email", forms.ValidationError("Email and password do not match")
             )
+
+
+class UpdateEmailForm(forms.Form):
+
+    new_email = forms.CharField(
+        widget=forms.EmailInput(attrs={"placeholder": _("NEW EMAIL")})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": _("CURRENT PASSWORD")})
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        return super().__init__(*args, **kwargs)
+
+    def clean_new_email(self):
+        new_email = self.cleaned_data["new_email"].lower()
+        is_exist = get_user_model().objects.filter(email=new_email).exists()
+        if is_exist:
+            raise forms.ValidationError(_("Email already exists"))
+        return new_email
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        if not self.user.check_password(password):
+            raise forms.ValidationError(_("Password don't match"))
+        password_validation.validate_password(password)
+        return password
+
+    def save(self, commit=True):
+        self.user.email = self.cleaned_data["new_email"]
+        self.user.save()
+        return self.user

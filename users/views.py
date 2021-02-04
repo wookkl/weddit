@@ -8,22 +8,25 @@ from django.contrib.auth import authenticate, get_user_model, login, logout
 
 from . import forms
 
+MESSAGE_WELCOME = _("Welcome back!")
+MESSAGE_UPDATED = _("Updated successfully")
 
-def sign_up_view(request):
+
+def sign_up(request):
     """Create user view"""
     if request.method == "POST":
         form = forms.CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, _("Account created successfully"))
+            messages.success(request, MESSAGE_WELCOME)
             return redirect(reverse("home"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 messages.error(request, error.message)
     elif request.method == "GET":
         form = forms.CustomUserCreationForm()
-    return render(request, "core/signup.html", {"form": form})
+    return render(request, "core/signup.html", {"form": form}, status=200)
 
 
 def log_in(request):
@@ -36,14 +39,14 @@ def log_in(request):
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "Welcome back!")
+                messages.success(request, MESSAGE_WELCOME)
                 return redirect(reverse("home"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 messages.error(request, error.message)
     elif request.method == "GET":
         form = forms.LoginForm()
-    return render(request, "core/login.html", {"form": form})
+    return render(request, "core/login.html", {"form": form}, status=200)
 
 
 @login_required(login_url=reverse_lazy("login"))
@@ -60,3 +63,24 @@ def user_detail(request, nickname):
             return render(request, "users/detail.html", {"user_obj": user})
         except get_user_model().DoesNotExist:
             return redirect("home")
+
+
+@login_required(login_url=reverse_lazy("login"))
+def user_settings(request):
+    return render(request, "users/settings.html", status=200)
+
+
+@login_required(login_url=reverse_lazy("login"))
+def update_email(request):
+    if request.method == "POST":
+        form = forms.UpdateEmailForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, MESSAGE_UPDATED)
+            return redirect(reverse("settings"))
+        for key in form.errors.as_data().keys():
+            for error in form.errors.as_data()[key]:
+                messages.error(request, error.message)
+    elif request.method == "GET":
+        form = forms.UpdateEmailForm()
+    return render(request, "users/update.html", {"form": form}, status=200)

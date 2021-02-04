@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 
 SIGN_UP_URL = reverse("sign-up")
 LOGOUT_URL = reverse("logout")
+UPDATE_PASSWORD_URL = reverse("update-password")
 
 
 def get_user_retrieve_url(nickname):
@@ -141,4 +142,12 @@ class PrivateUserTests(TestCase):
     def test_logout_user(self):
         res = self.client.get(LOGOUT_URL)
 
+        self.assertEqual(res.status_code, 302)
+
+    def test_update_new_email_success(self):
+        payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
+
+        res = self.client.post(UPDATE_PASSWORD_URL, payload)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, payload["new_email"])
         self.assertEqual(res.status_code, 302)
