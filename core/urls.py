@@ -5,9 +5,9 @@ from users import views as user_views
 
 settings_router = [
     path("settings/", user_views.user_settings, name="settings"),
-    path("settings/email", user_views.update_email, name="update-email"),
-    path("settings/nickname", user_views.update_nickname, name="update-nickname"),
-    # path("settings/email", user_settings, name="update-email"),
+    path("settings/email/", user_views.update_email, name="update-email"),
+    path("settings/nickname/", user_views.update_nickname, name="update-nickname"),
+    path("settings/password/", user_views.update_password, name="update-password"),
 ]
 
 urlpatterns = [

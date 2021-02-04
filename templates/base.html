@@ -7,6 +7,15 @@
     </head>
     
     <body>
+        <div>
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
         {% include 'partials/header.html' %}
 
         {% block content %}        

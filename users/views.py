@@ -72,6 +72,7 @@ def user_settings(request):
 
 @login_required(login_url=reverse_lazy("login"))
 def update_email(request):
+    errors = []
     if request.method == "POST":
         form = forms.UpdateEmailForm(request.POST, user=request.user)
         if form.is_valid():
@@ -80,14 +81,17 @@ def update_email(request):
             return redirect(reverse("settings"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
-                messages.error(request, error.message)
+                errors.append(error.message)
     elif request.method == "GET":
         form = forms.UpdateEmailForm(user=request.user)
-    return render(request, "users/update.html", {"form": form}, status=200)
+    return render(
+        request, "users/update.html", {"form": form, "errors": errors}, status=200
+    )
 
 
 @login_required(login_url=reverse_lazy("login"))
 def update_nickname(request):
+    errors = []
     if request.method == "POST":
         form = forms.UpdateNicknameForm(request.POST, user=request.user)
         if form.is_valid():
@@ -96,7 +100,28 @@ def update_nickname(request):
             return redirect(reverse("settings"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
-                messages.error(request, error.message)
+                errors.append(error.message)
     elif request.method == "GET":
         form = forms.UpdateNicknameForm(user=request.user)
-    return render(request, "users/update.html", {"form": form}, status=200)
+    return render(
+        request, "users/update.html", {"form": form, "errors": errors}, status=200
+    )
+
+
+@login_required(login_url=reverse_lazy("login"))
+def update_password(request):
+    errors = []
+    if request.method == "POST":
+        form = forms.UpdatePasswordForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, MESSAGE_UPDATED)
+            return redirect(reverse("settings"))
+        for key in form.errors.as_data().keys():
+            for error in form.errors.as_data()[key]:
+                errors.append(error.message)
+    elif request.method == "GET":
+        form = forms.UpdatePasswordForm(user=request.user)
+    return render(
+        request, "users/update.html", {"form": form, "errors": errors}, status=200
+    )

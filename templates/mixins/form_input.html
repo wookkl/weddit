@@ -1,8 +1,8 @@
 <div>
-    {% if messages %}
+    {% if errors %}
     <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
+        {% for error in errors %}
+            <li>{{ error }}</li>
         {% endfor %}
     </ul>
     {% endif %}

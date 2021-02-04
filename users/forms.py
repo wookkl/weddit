@@ -148,3 +148,43 @@ class UpdateNicknameForm(forms.Form):
         self.user.nickname = self.cleaned_data["new_nickname"]
         self.user.save()
         return self.user
+
+
+class UpdatePasswordForm(forms.Form):
+
+    current_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": _("CURRENT PASSWORD")})
+    )
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": _("NEW PASSWORD")})
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"placeholder": _("CONFIRM PASSWORD")},
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        return super().__init__(*args, **kwargs)
+
+    def clean_current_password(self):
+        current_password = self.cleaned_data["current_password"]
+        if not self.user.check_password(current_password):
+            raise forms.ValidationError(_("Password does not match"))
+        return current_password
+
+    def clean_password2(self):
+        password1 = self.cleaned_data["password1"]
+        password2 = self.cleaned_data["password2"]
+        if password1 != password2:
+            raise forms.ValidationError(
+                _("New password and confirm password do not match")
+            )
+        password_validation.validate_password(password2)
+        return password2
+
+    def save(self, commit=True):
+        self.user.set_password(self.cleaned_data["password1"])
+        self.user.save()
+        return self.user
