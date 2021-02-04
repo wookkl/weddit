@@ -122,3 +122,29 @@ class UpdateEmailForm(forms.Form):
         self.user.email = self.cleaned_data["new_email"]
         self.user.save()
         return self.user
+
+
+class UpdateNicknameForm(forms.Form):
+
+    new_nickname = forms.CharField(
+        min_length=4,
+        max_length=20,
+        widget=forms.TextInput(attrs={"placeholder": _("NEW NICKNAME")}),
+        validators=[alphanumeric],
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        return super().__init__(*args, **kwargs)
+
+    def clean_new_nickname(self):
+        new_nickname = self.cleaned_data["new_nickname"].lower()
+        is_exist = get_user_model().objects.filter(nickname=new_nickname).exists()
+        if is_exist:
+            raise forms.ValidationError(_("Nickname already exists"))
+        return new_nickname
+
+    def save(self, commit=True):
+        self.user.nickname = self.cleaned_data["new_nickname"]
+        self.user.save()
+        return self.user

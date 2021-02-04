@@ -82,5 +82,21 @@ def update_email(request):
             for error in form.errors.as_data()[key]:
                 messages.error(request, error.message)
     elif request.method == "GET":
-        form = forms.UpdateEmailForm()
+        form = forms.UpdateEmailForm(user=request.user)
+    return render(request, "users/update.html", {"form": form}, status=200)
+
+
+@login_required(login_url=reverse_lazy("login"))
+def update_nickname(request):
+    if request.method == "POST":
+        form = forms.UpdateNicknameForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, MESSAGE_UPDATED)
+            return redirect(reverse("settings"))
+        for key in form.errors.as_data().keys():
+            for error in form.errors.as_data()[key]:
+                messages.error(request, error.message)
+    elif request.method == "GET":
+        form = forms.UpdateNicknameForm(user=request.user)
     return render(request, "users/update.html", {"form": form}, status=200)

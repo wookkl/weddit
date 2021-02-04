@@ -5,7 +5,8 @@ from django.contrib.auth import get_user_model
 
 SIGN_UP_URL = reverse("sign-up")
 LOGOUT_URL = reverse("logout")
-UPDATE_PASSWORD_URL = reverse("update-password")
+UPDATE_EMAIL_URL = reverse("update-email")
+UPDATE_NICKNAME_URL = reverse("update-nickname")
 
 
 def get_user_retrieve_url(nickname):
@@ -145,9 +146,47 @@ class PrivateUserTests(TestCase):
         self.assertEqual(res.status_code, 302)
 
     def test_update_new_email_success(self):
+        """Test updating a new email success"""
         payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
 
-        res = self.client.post(UPDATE_PASSWORD_URL, payload)
+        res = self.client.post(UPDATE_EMAIL_URL, payload)
         self.user.refresh_from_db()
         self.assertEqual(self.user.email, payload["new_email"])
         self.assertEqual(res.status_code, 302)
+
+    def test_update_new_email_invalid(self):
+        """Test updating email that already exists fails"""
+        create_user(
+            **{
+                "email": "newemail@gmail.com",
+                "nickname": "new name",
+                "password": "password123@",
+            }
+        )
+        payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
+        self.client.post(UPDATE_EMAIL_URL, payload)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.email == payload["new_email"])
+
+    def test_update_new_nickname_success(self):
+        """Test updating a new nickname success"""
+        payload = {"new_nickname": "changednickname"}
+
+        res = self.client.post(UPDATE_NICKNAME_URL, payload)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.nickname, payload["new_nickname"])
+        self.assertEqual(res.status_code, 302)
+
+    def test_update_new_nickname_invalid(self):
+        """Test updating nickname that already exists fails"""
+        create_user(
+            **{
+                "email": "newemail@gmail.com",
+                "nickname": "samename",
+                "password": "password123@",
+            }
+        )
+        payload = {"new_nickname": "samename"}
+        self.client.post(UPDATE_NICKNAME_URL, payload)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.nickname == payload["new_nickname"])
