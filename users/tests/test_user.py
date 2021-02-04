@@ -137,3 +137,8 @@ class PrivateUserTests(TestCase):
         res = self.client.get(get_user_retrieve_url(self.user.nickname))
 
         self.assertEqual(res.status_code, 200)
+
+    def test_logout_user(self):
+        res = self.client.get(LOGOUT_URL)
+
+        self.assertEqual(res.status_code, 302)

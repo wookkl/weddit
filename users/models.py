@@ -1,8 +1,8 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
-    UserManager,
 )
 
 from .managers import CustomUserManager
@@ -21,3 +21,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["nickname"]
     objects = CustomUserManager()
+
+    def get_absolute_url(self):
+        return reverse("user:detail", kwargs={"nickname": self.nickname})

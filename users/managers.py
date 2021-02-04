@@ -1,4 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
 
 
@@ -20,7 +21,6 @@ class CustomUserManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
     def create_superuser(self, email, nickname, password=None):
@@ -35,5 +35,11 @@ class CustomUserManager(BaseUserManager):
         superuser.is_staff = True
         superuser.set_password(password)
         superuser.save(using=self._db)
-
         return superuser
+
+    def get_or_none(self, **kwargs):
+        try:
+            obj = self.get(**kwargs)
+            return obj
+        except get_user_model().DoesNotExist:
+            return None
