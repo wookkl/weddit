@@ -188,3 +188,20 @@ class UpdatePasswordForm(forms.Form):
         self.user.set_password(self.cleaned_data["password1"])
         self.user.save()
         return self.user
+
+
+class DeleteAccountForm(forms.Form):
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": _("CONFIRM PASSWORD")})
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        return super().__init__(*args, **kwargs)
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        if not self.user.check_password(password):
+            raise forms.ValidationError(_("Password does not match"))
+        return password

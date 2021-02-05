@@ -6,5 +6,6 @@
     
 {% block content %}
     {% include 'mixins/form.html' with form=form cta="Update"%}
+    <a href="{% url 'settings' %}">Cancel</a>
 {% endblock content %}
     

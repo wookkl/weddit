@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
+from django.conf import settings
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -20,7 +21,7 @@ def sign_up(request):
             user = form.save()
             login(request, user)
             messages.success(request, MESSAGE_WELCOME)
-            return redirect(reverse("home"))
+            return redirect(settings.LOGIN_REDIRECT_URL)
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 messages.error(request, error.message)
@@ -40,7 +41,7 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, MESSAGE_WELCOME)
-                return redirect(reverse("home"))
+                return redirect(settings.LOGIN_REDIRECT_URL)
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 messages.error(request, error.message)
@@ -49,10 +50,10 @@ def log_in(request):
     return render(request, "core/login.html", {"form": form}, status=200)
 
 
-@login_required(login_url=reverse_lazy("login"))
+@login_required
 def log_out(request):
     logout(request)
-    return redirect(reverse("home"))
+    return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
 @require_http_methods(["GET"])
@@ -65,20 +66,22 @@ def user_detail(request, nickname):
             return redirect("home")
 
 
-@login_required(login_url=reverse_lazy("login"))
+@login_required
 def user_settings(request):
     return render(request, "users/settings.html", status=200)
 
 
-@login_required(login_url=reverse_lazy("login"))
+@login_required
 def update_email(request):
     errors = []
     if request.method == "POST":
+        if "cancel" in request.POST:
+            return redirect(reverse("user:settings"))
         form = forms.UpdateEmailForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("settings"))
+            return redirect(reverse("user:settings"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 errors.append(error.message)
@@ -89,15 +92,17 @@ def update_email(request):
     )
 
 
-@login_required(login_url=reverse_lazy("login"))
+@login_required
 def update_nickname(request):
     errors = []
     if request.method == "POST":
+        if "cancel" in request.POST:
+            return redirect(reverse("user:settings"))
         form = forms.UpdateNicknameForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("settings"))
+            return redirect(reverse("user:settings"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 errors.append(error.message)
@@ -108,15 +113,17 @@ def update_nickname(request):
     )
 
 
-@login_required(login_url=reverse_lazy("login"))
+@login_required
 def update_password(request):
     errors = []
     if request.method == "POST":
+        if "cancel" in request.POST:
+            return redirect(reverse("user:settings"))
         form = forms.UpdatePasswordForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("settings"))
+            return redirect(reverse("user:settings"))
         for key in form.errors.as_data().keys():
             for error in form.errors.as_data()[key]:
                 errors.append(error.message)
@@ -124,4 +131,27 @@ def update_password(request):
         form = forms.UpdatePasswordForm(user=request.user)
     return render(
         request, "users/update.html", {"form": form, "errors": errors}, status=200
+    )
+
+
+@login_required
+def delete_account(request):
+    errors = []
+    if request.method == "POST":
+        if "cancel" in request.POST:
+            return redirect(reverse("user:settings"))
+        form = forms.DeleteAccountForm(request.POST, user=request.user)
+        if form.is_valid():
+            user = form.save()
+            logout(request)
+            user.delete()
+            messages.success(request, _("Account successfully deleted"))
+            return redirect(settings.LOGOUT_REDIRECT_URL)
+        for key in form.errors.as_data().keys():
+            for error in form.errors.as_data()[key]:
+                errors.append(error.message)
+    elif request.method == "GET":
+        form = forms.DeleteAccountForm(user=request.user)
+    return render(
+        request, "users/delete.html", {"form": form, "errors": errors}, status=200
     )

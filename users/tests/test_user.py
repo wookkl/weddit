@@ -7,6 +7,7 @@ SIGN_UP_URL = reverse("sign-up")
 LOGOUT_URL = reverse("logout")
 UPDATE_EMAIL_URL = reverse("update-email")
 UPDATE_NICKNAME_URL = reverse("update-nickname")
+UPDATE_PASSWORD_URL = reverse("update-password")
 
 
 def get_user_retrieve_url(nickname):
@@ -190,3 +191,27 @@ class PrivateUserTests(TestCase):
         self.client.post(UPDATE_NICKNAME_URL, payload)
         self.user.refresh_from_db()
         self.assertFalse(self.user.nickname == payload["new_nickname"])
+
+    def test_update_new_password_success(self):
+        """Test updating a new password success"""
+        payload = {
+            "current_password": "password123@",
+            "password1": "changedpassword123@",
+            "password2": "changedpassword123@",
+        }
+
+        res = self.client.post(UPDATE_PASSWORD_URL, payload)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(payload["password1"]))
+        self.assertEqual(res.status_code, 302)
+
+    def test_update_new_password_invalid(self):
+        """Test updating with mismatched password"""
+        payload = {
+            "current_password": "wrongpassword123@",
+            "password1": "password49124@",
+            "password2": "password49124@",
+        }
+        self.client.post(UPDATE_PASSWORD_URL, payload)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password(payload["password1"]))
