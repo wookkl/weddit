@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.conf import settings
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
@@ -11,10 +11,22 @@ from . import forms
 
 MESSAGE_WELCOME = _("Welcome back!")
 MESSAGE_UPDATED = _("Updated successfully")
+USER_SETTINGS_URL = reverse_lazy("settings")
 
 
+# FUNCTIONS
+def get_errors(form):
+    errors = []
+    for key in form.errors.as_data().keys():
+        for error in form.errors.as_data()[key]:
+            errors.append(error.message)
+    return errors
+
+
+# VIEWS
 def sign_up(request):
     """Create user view"""
+    errors = []
     if request.method == "POST":
         form = forms.CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -22,16 +34,17 @@ def sign_up(request):
             login(request, user)
             messages.success(request, MESSAGE_WELCOME)
             return redirect(settings.LOGIN_REDIRECT_URL)
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                messages.error(request, error.message)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.CustomUserCreationForm()
-    return render(request, "core/signup.html", {"form": form}, status=200)
+    return render(
+        request, "core/signup.html", {"form": form, "errors": errors}, status=200
+    )
 
 
 def log_in(request):
     """Login user view"""
+    errors = []
     if request.method == "POST":
         form = forms.LoginForm(request.POST)
         if form.is_valid():
@@ -42,12 +55,12 @@ def log_in(request):
                 login(request, user)
                 messages.success(request, MESSAGE_WELCOME)
                 return redirect(settings.LOGIN_REDIRECT_URL)
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                messages.error(request, error.message)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.LoginForm()
-    return render(request, "core/login.html", {"form": form}, status=200)
+    return render(
+        request, "core/login.html", {"form": form, "errors": errors}, status=200
+    )
 
 
 @login_required
@@ -76,15 +89,13 @@ def update_email(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
-            return redirect(reverse("user:settings"))
+            return redirect(USER_SETTINGS_URL)
         form = forms.UpdateEmailForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("user:settings"))
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+            return redirect(USER_SETTINGS_URL)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.UpdateEmailForm(user=request.user)
     return render(
@@ -97,15 +108,13 @@ def update_nickname(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
-            return redirect(reverse("user:settings"))
+            return redirect(USER_SETTINGS_URL)
         form = forms.UpdateNicknameForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("user:settings"))
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+            return redirect(USER_SETTINGS_URL)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.UpdateNicknameForm(user=request.user)
     return render(
@@ -118,15 +127,13 @@ def update_password(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
-            return redirect(reverse("user:settings"))
+            return redirect(USER_SETTINGS_URL)
         form = forms.UpdatePasswordForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, MESSAGE_UPDATED)
-            return redirect(reverse("user:settings"))
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+            return redirect(USER_SETTINGS_URL)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.UpdatePasswordForm(user=request.user)
     return render(
@@ -139,7 +146,7 @@ def delete_account(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
-            return redirect(reverse("user:settings"))
+            return redirect(USER_SETTINGS_URL)
         form = forms.DeleteAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
@@ -147,9 +154,7 @@ def delete_account(request):
             user.delete()
             messages.success(request, _("Account successfully deleted"))
             return redirect(settings.LOGOUT_REDIRECT_URL)
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+        errors = get_errors(form)
     elif request.method == "GET":
         form = forms.DeleteAccountForm(user=request.user)
     return render(

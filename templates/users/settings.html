@@ -7,18 +7,18 @@
 {% block content %}
     <div>
         <span>Email address</span>
-        <a href="{% url 'user:update-email' %}">Change</a>
+        <a href="{% url 'update-email' %}">Change</a>
     </div>
     <div>
         <span>Nickname</span>
-        <a href="{% url 'user:update-nickname' %}">Change</a>
+        <a href="{% url 'update-nickname' %}">Change</a>
     </div>
     <div>
         <span>Change password</span>
-        <a href="{% url 'user:update-password' %}">Change</a>
+        <a href="{% url 'update-password' %}">Change</a>
     </div>
     <div>
-        <a href="{% url 'user:delete-account' %}">DELETE ACCOUNT</a>
+        <a href="{% url 'delete-account' %}">DELETE ACCOUNT</a>
     </div>
 {% endblock content %}
     

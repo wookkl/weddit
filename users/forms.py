@@ -205,3 +205,6 @@ class DeleteAccountForm(forms.Form):
         if not self.user.check_password(password):
             raise forms.ValidationError(_("Password does not match"))
         return password
+
+    def save(self, commit=True):
+        return self.user
