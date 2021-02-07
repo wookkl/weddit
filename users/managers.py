@@ -11,8 +11,7 @@ class CustomUserManager(BaseUserManager):
         else:
             raise ValidationError("Nickname does not exist")
 
-    def create_user(self, email, nickname, password=None):
-        """Customize create user function"""
+    def _create(self, email, nickname, password=None):
         if not email:
             raise ValidationError("Email does not exist")
         user = self.model(
@@ -23,17 +22,15 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_user(self, email, nickname, password=None):
+        """Customize create user function"""
+        return self._create(email, nickname, password)
+
     def create_superuser(self, email, nickname, password=None):
         """Customize create superuser function"""
-        if not email:
-            raise ValidationError("Email does not exist")
-        superuser = self.model(
-            email=self.normalize_email(email),
-            nickname=self.normalize_nickname(nickname),
-        )
+        superuser = self._create(email, nickname, password)
         superuser.is_superuser = True
         superuser.is_staff = True
-        superuser.set_password(password)
         superuser.save(using=self._db)
         return superuser
 

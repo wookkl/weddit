@@ -7,12 +7,20 @@ from django.contrib.auth.models import (
 
 from .managers import CustomUserManager
 
+from core.validators import alphanumeric_validator
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """User model definition"""
 
     email = models.EmailField(max_length=255, unique=True)
-    nickname = models.CharField(max_length=20, unique=True)
+    nickname = models.CharField(
+        max_length=20,
+        unique=True,
+        validators=[
+            alphanumeric_validator,
+        ],
+    )
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -24,3 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return reverse("user:detail", kwargs={"nickname": self.nickname})
+
+    def save(self, *args, **kwargs):
+        alphanumeric_validator(self.nickname)
+        super().save(*args, **kwargs)

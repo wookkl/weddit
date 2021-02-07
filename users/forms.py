@@ -1,15 +1,9 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
 from django.utils.translation import gettext as _
 
-alphanumeric = RegexValidator(
-    regex=r"^[0-9a-zA-Z]*$",
-    message=_(
-        "Only alphanumeric characters are allowed",
-    ),
-)
+from core.validators import alphanumeric_validator
 
 
 class CustomUserCreationForm(forms.Form):
@@ -21,7 +15,7 @@ class CustomUserCreationForm(forms.Form):
         min_length=4,
         max_length=20,
         widget=forms.TextInput(attrs={"placeholder": _("ENTER NICKNAME")}),
-        validators=[alphanumeric],
+        validators=[alphanumeric_validator],
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={"placeholder": _("ENTER PASSWORD")})
@@ -130,7 +124,7 @@ class UpdateNicknameForm(forms.Form):
         min_length=4,
         max_length=20,
         widget=forms.TextInput(attrs={"placeholder": _("NEW NICKNAME")}),
-        validators=[alphanumeric],
+        validators=[alphanumeric_validator],
     )
 
     def __init__(self, *args, **kwargs):

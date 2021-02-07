@@ -24,7 +24,7 @@ class UserModelTests(TestCase):
     def test_create_new_user_success(self):
         """Test creating a new user success"""
         email = "test@gmail.com"
-        nickname = "test name"
+        nickname = "testname"
         password = "password123@"
         user = get_user_model().objects.create_user(
             email=email, nickname=nickname, password=password
@@ -37,12 +37,19 @@ class UserModelTests(TestCase):
         self.assertFalse(user.is_staff)
 
     def test_create_new_user_invalid(self):
-        """Test creating a new user with invalid email"""
+        """Test creating a new user with invalid fields"""
 
         with self.assertRaises(ValidationError):
             get_user_model().objects.create_user(
                 email=None,
-                nickname="test name",
+                nickname="testname",
+                password="password123@",
+            )
+
+        with self.assertRaises(ValidationError):
+            get_user_model().objects.create_user(
+                email="test@gmail.com",
+                nickname="test     name",
                 password="password123@",
             )
 
@@ -81,8 +88,8 @@ class PublicUserTests(TestCase):
 
         res = self.client.post(SIGN_UP_URL, payload)
 
-        user = get_user_model().objects.get(email=payload["email"])
         self.assertEqual(res.status_code, 302)
+        user = get_user_model().objects.get(email=payload["email"])
         self.assertTrue(user.check_password(payload["password1"]))
 
     def test_user_exist(self):
@@ -130,7 +137,7 @@ class PrivateUserTests(TestCase):
         self.user = create_user(
             **{
                 "email": "test@gmail.com",
-                "nickname": "test name",
+                "nickname": "testname",
                 "password": "password123@",
             }
         )
@@ -160,7 +167,7 @@ class PrivateUserTests(TestCase):
         create_user(
             **{
                 "email": "newemail@gmail.com",
-                "nickname": "new name",
+                "nickname": "newname",
                 "password": "password123@",
             }
         )
@@ -175,8 +182,8 @@ class PrivateUserTests(TestCase):
 
         res = self.client.post(UPDATE_NICKNAME_URL, payload)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.nickname, payload["new_nickname"])
         self.assertEqual(res.status_code, 302)
+        self.assertEqual(self.user.nickname, payload["new_nickname"])
 
     def test_update_new_nickname_invalid(self):
         """Test updating nickname that already exists fails"""
