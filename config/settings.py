@@ -126,6 +126,12 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = "staticfiles/"
 
+# Media files
+
+MEDIA_ROOT = "uploads/"
+
+MEDIA_URL = "/media/"
+
 # AUTH
 
 AUTH_USER_MODEL = "users.User"

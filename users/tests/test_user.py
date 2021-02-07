@@ -18,7 +18,7 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 
-class ModelTests(TestCase):
+class UserModelTests(TestCase):
     """Model test"""
 
     def test_create_new_user_success(self):
@@ -46,7 +46,7 @@ class ModelTests(TestCase):
                 password="password123@",
             )
 
-    def test_create_new_superuser_sucessfully(self):
+    def test_create_new_superuser_success(self):
         """Test creating a new superuser sucessfully"""
 
         email = "superuser@gmail.com"
