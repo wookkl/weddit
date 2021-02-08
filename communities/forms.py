@@ -8,7 +8,7 @@ class CommunityForm(ModelForm):
 
     # the request is now available, add it to the instance data
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
+        print(kwargs)
         super().__init__(*args, **kwargs)
 
     def clean(self):

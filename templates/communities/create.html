@@ -1,14 +1,10 @@
 {% extends 'base.html' %}
 
 {% block page_title %}
-    Communities - 
+    Create - 
 {% endblock page_title %}
     
 {% block content %}
-    
-    {% for community in obj_list %}
-        {{ community }}
-    {% endfor %}
-        
+    {% include 'mixins/form.html' with form=form cta="Log in" method="post" %}
 {% endblock content %}
     

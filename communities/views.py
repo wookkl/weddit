@@ -27,7 +27,7 @@ class CommunityCreateView(CreateView):
     model = Community
     fields = None
     form_class = CommunityForm
-    template_name = "communities/crete.html"
+    template_name = "communities/create.html"
 
     def get_success_url(self):
         return reverse_lazy("communitoes:detail", kwargs={"pk": self.object.pk})
