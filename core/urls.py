@@ -10,6 +10,7 @@ settings_router = [
     path("settings/password/", user_views.update_password, name="update-password"),
     path("settings/delete-account/", user_views.delete_account, name="delete-account"),
 ]
+
 urlpatterns = [
     path("", views.home_view, name="home"),
     path("signup/", user_views.sign_up, name="sign-up"),

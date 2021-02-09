@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 from communities.models import Community
 
-# from posts.models import Post
+from posts.models import Post
 
 
 def get_sample_user(**params):
@@ -29,6 +29,16 @@ def get_sample_community(creater=None, **params):
         "avatar": tempfile.NamedTemporaryFile(suffix=".jpg").name,
         "photo": tempfile.NamedTemporaryFile(suffix=".png").name,
     }
-    params["creater"] = creater if creater else get_sample_user()
     defaults.update(params)
     return Community.objects.create(**defaults)
+
+
+def get_sample_post(writer=None, community=None, **params):
+    defaults = {
+        "writer": writer,
+        "community": community,
+        "content": "sample content",
+        "photo": tempfile.NamedTemporaryFile(suffix=".png").name,
+    }
+    defaults.update(params)
+    return Post.objects.create(**defaults)
