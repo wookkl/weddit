@@ -37,5 +37,8 @@ class Community(models.Model):
     def get_absolute_url(self):
         return reverse("communities:detail", kwargs={"slug": self.slug})
 
+    def get_avatar_url(self):
+        return self.avatar.url
+
     class Meta:
         verbose_name_plural = "communities"

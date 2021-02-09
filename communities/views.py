@@ -1,7 +1,9 @@
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.utils.translation import gettext as _
 
 from .models import Community
 from .forms import CommunityForm
@@ -21,12 +23,13 @@ class CommunityListView(ListView):
 
 @method_decorator(login_required, "get")
 @method_decorator(login_required, "post")
-class CommunityCreateView(CreateView):
+class CommunityCreateView(CreateView, SuccessMessageMixin):
     """Community create view definition"""
 
     model = Community
     form_class = CommunityForm
     template_name = "communities/create.html"
+    success_message = _("Community created successfully")
 
     def get_success_url(self):
         return reverse("communities:detail", kwargs={"slug": self.object.slug})
@@ -35,6 +38,13 @@ class CommunityCreateView(CreateView):
         kwargs = super().get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+
+    def form_invalid(self, form):
+        errors = []
+        for key in form.errors.as_data().keys():
+            for error in form.errors.as_data()[key]:
+                errors.append(error.message)
+        return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
 class CommunityDetailView(DetailView):

@@ -1,5 +1,6 @@
 from django.forms import models
 from django import forms
+from django.utils.translation import gettext as _
 
 from .models import Community
 
@@ -25,6 +26,13 @@ class CommunityForm(models.ModelForm):
         if commit:
             instance.save(commit)
         return instance
+
+    def clean_name(self):
+        name = self.cleaned_data["name"].lower()
+        is_exist = Community.objects.filter(name=name).exists()
+        if is_exist:
+            raise forms.ValidationError(_("Name already exists"))
+        return name
 
     class Meta:
         model = Community
