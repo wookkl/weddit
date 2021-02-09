@@ -18,7 +18,7 @@ def get_user_retrieve_url(nickname):
 
 
 class UserModelTests(TestCase):
-    """Model test"""
+    """User model test"""
 
     def test_create_new_user_success(self):
         """Test creating a new user success"""
@@ -59,7 +59,6 @@ class UserModelTests(TestCase):
         email = "superuser@gmail.com"
         nickname = "admin"
         password = "superuserpassword123@"
-
         superuser = get_user_model().objects.create_superuser(
             email=email,
             nickname=nickname,
@@ -101,7 +100,6 @@ class PublicUserTests(TestCase):
             "password1": "userpass123@",
             "password2": "userpass123@",
         }
-
         get_sample_user(
             **{
                 "email": "test@gmail.com",
@@ -109,7 +107,6 @@ class PublicUserTests(TestCase):
                 "password": "userpass123@",
             }
         )
-
         self.client.post(SIGN_UP_URL, payload)
 
         self.assertEqual(1, get_user_model().objects.count())
@@ -121,7 +118,6 @@ class PublicUserTests(TestCase):
             "password1": "123",
             "password2": "123",
         }
-
         self.client.post(SIGN_UP_URL, payload)
 
         self.assertFalse(
@@ -155,15 +151,17 @@ class PrivateUserTests(TestCase):
 
     def test_update_new_email_success(self):
         """Test updating a new email success"""
-        payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
 
+        payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
         res = self.client.post(UPDATE_EMAIL_URL, payload)
         self.user.refresh_from_db()
+
         self.assertEqual(self.user.email, payload["new_email"])
         self.assertEqual(res.status_code, 302)
 
     def test_update_new_email_invalid(self):
         """Test updating email that already exists fails"""
+
         get_sample_user(
             **{
                 "email": "newemail@gmail.com",
@@ -174,19 +172,22 @@ class PrivateUserTests(TestCase):
         payload = {"new_email": "newemail@gmail.com", "password": "password123@"}
         self.client.post(UPDATE_EMAIL_URL, payload)
         self.user.refresh_from_db()
+
         self.assertFalse(self.user.email == payload["new_email"])
 
     def test_update_new_nickname_success(self):
         """Test updating a new nickname success"""
-        payload = {"new_nickname": "changednickname"}
 
+        payload = {"new_nickname": "changednickname"}
         res = self.client.post(UPDATE_NICKNAME_URL, payload)
         self.user.refresh_from_db()
+
         self.assertEqual(res.status_code, 302)
         self.assertEqual(self.user.nickname, payload["new_nickname"])
 
     def test_update_new_nickname_invalid(self):
         """Test updating nickname that already exists fails"""
+
         get_sample_user(
             **{
                 "email": "newemail@gmail.com",
@@ -201,19 +202,21 @@ class PrivateUserTests(TestCase):
 
     def test_update_new_password_success(self):
         """Test updating a new password success"""
+
         payload = {
             "current_password": "password123@",
             "password1": "changedpassword123@",
             "password2": "changedpassword123@",
         }
-
         res = self.client.post(UPDATE_PASSWORD_URL, payload)
         self.user.refresh_from_db()
+
         self.assertTrue(self.user.check_password(payload["password1"]))
         self.assertEqual(res.status_code, 302)
 
     def test_update_new_password_invalid(self):
         """Test updating with mismatched password"""
+
         payload = {
             "current_password": "wrongpassword123@",
             "password1": "password49124@",
@@ -221,4 +224,5 @@ class PrivateUserTests(TestCase):
         }
         self.client.post(UPDATE_PASSWORD_URL, payload)
         self.user.refresh_from_db()
+
         self.assertFalse(self.user.check_password(payload["password1"]))

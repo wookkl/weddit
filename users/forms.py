@@ -6,8 +6,7 @@ from django.utils.translation import gettext as _
 from core.validators import alphanumeric_validator
 
 
-class CustomUserCreationForm(forms.Form):
-
+class CustomUserCreateForm(forms.Form):
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": _("ENTER EMAIL")})
     )

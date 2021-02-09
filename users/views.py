@@ -14,7 +14,6 @@ MESSAGE_UPDATED = _("Updated successfully")
 USER_SETTINGS_URL = reverse_lazy("settings")
 
 
-# FUNCTIONS
 def get_errors(form):
     errors = []
     for key in form.errors.as_data().keys():
@@ -24,11 +23,12 @@ def get_errors(form):
 
 
 # VIEWS
-def sign_up(request):
+def signup_view(request):
     """Create user view"""
+
     errors = []
     if request.method == "POST":
-        form = forms.CustomUserCreationForm(request.POST)
+        form = forms.CustomUserCreateForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -36,14 +36,15 @@ def sign_up(request):
             return redirect(settings.LOGIN_REDIRECT_URL)
         errors = get_errors(form)
     elif request.method == "GET":
-        form = forms.CustomUserCreationForm()
+        form = forms.CustomUserCreateForm()
     return render(
         request, "core/signup.html", {"form": form, "errors": errors}, status=200
     )
 
 
-def log_in(request):
+def login_view(request):
     """Login user view"""
+
     errors = []
     if request.method == "POST":
         form = forms.LoginForm(request.POST)
@@ -64,13 +65,16 @@ def log_in(request):
 
 
 @login_required
-def log_out(request):
+def logout_view(request):
+    """Log out view"""
+
     logout(request)
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
 @require_http_methods(["GET"])
-def user_detail(request, nickname):
+def detail_view(request, nickname):
+    """User detail view"""
     if request.method == "GET":
         try:
             user = get_user_model().objects.get(nickname=nickname)
@@ -80,12 +84,12 @@ def user_detail(request, nickname):
 
 
 @login_required
-def user_settings(request):
+def settings_view(request):
     return render(request, "users/settings.html", status=200)
 
 
 @login_required
-def update_email(request):
+def update_email_view(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
@@ -104,7 +108,7 @@ def update_email(request):
 
 
 @login_required
-def update_nickname(request):
+def update_nickname_view(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
@@ -123,7 +127,7 @@ def update_nickname(request):
 
 
 @login_required
-def update_password(request):
+def update_password_view(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:
@@ -142,7 +146,7 @@ def update_password(request):
 
 
 @login_required
-def delete_account(request):
+def delete_view(request):
     errors = []
     if request.method == "POST":
         if "cancel" in request.POST:

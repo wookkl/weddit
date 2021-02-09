@@ -6,6 +6,8 @@ from .models import Community
 
 @admin.register(Community)
 class CommunityAdmin(admin.ModelAdmin):
+    """Community admin definition"""
+
     list_display = (
         "name",
         "description",

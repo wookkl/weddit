@@ -21,12 +21,12 @@ class CommunityModelTests(TestCase):
 
     def test_create_new_community_success(self):
         """Test creating a new community success"""
+
         creater = self.user
         name = "testTitle"
         description = "this is test community"
         avatar = tempfile.NamedTemporaryFile(suffix=".jpg").name
         photo = tempfile.NamedTemporaryFile(suffix=".png").name
-
         community = Community.objects.create(
             creater=creater,
             name=name,
@@ -41,6 +41,7 @@ class CommunityModelTests(TestCase):
 
     def test_create_new_community_invalid_field(self):
         """Test creating a new community with invalid fields"""
+
         creater = self.user
         name = "space name"
         description = "this is test community"
@@ -70,8 +71,8 @@ class PublicCommunityTests(TestCase):
             "name": "testname",
             "description": "test description",
         }
-
         res = self.client.post(COMMUNITY_CREATE_URL, payload)
+
         self.assertRedirects(
             res,
             settings.LOGIN_URL + "?next=/communities/create/",
@@ -91,9 +92,9 @@ class PrivateCommunityTest(TestCase):
 
         get_sample_community(creater=self.user)
         get_sample_community(creater=self.user, **{"name": "test2"})
-
         res = self.client.get(COMMUNITY_LIST_URL)
         communities = Community.objects.all().order_by("-id")
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(2, communities.count())
 
@@ -105,5 +106,6 @@ class PrivateCommunityTest(TestCase):
         }
         res = self.client.post(COMMUNITY_CREATE_URL, payload)
         community = Community.objects.get(name=payload["name"])
+
         self.assertRedirects(res, community.get_absolute_url())
         self.assertTrue(Community.objects.filter(name=payload["name"]).exists())

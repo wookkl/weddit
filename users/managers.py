@@ -4,6 +4,8 @@ from django.core.validators import ValidationError
 
 
 class CustomUserManager(BaseUserManager):
+    """Customized user manager"""
+
     @classmethod
     def normalize_nickname(cls, nickname):
         if nickname:
@@ -12,6 +14,7 @@ class CustomUserManager(BaseUserManager):
             raise ValidationError("Nickname does not exist")
 
     def _create(self, email, nickname, password=None):
+        """Return a base user"""
         if not email:
             raise ValidationError("Email does not exist")
         user = self.model(
@@ -23,13 +26,9 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_user(self, email, nickname, password=None):
-        """Customize create user function"""
-
         return self._create(email, nickname, password)
 
     def create_superuser(self, email, nickname, password=None):
-        """Customize create superuser function"""
-
         superuser = self._create(email, nickname, password)
         superuser.is_superuser = True
         superuser.is_staff = True

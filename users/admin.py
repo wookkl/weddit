@@ -8,7 +8,6 @@ class UserAdmin(admin.ModelAdmin):
 
     ordering = ("id",)
     list_display = ("email", "nickname", "is_staff", "is_superuser")
-
     fieldsets = (
         (None, {"fields": ("id", "email", "password")}),
         (_("Personal Info"), {"fields": ("nickname",)}),

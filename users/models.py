@@ -26,9 +26,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
+    objects = CustomUserManager()
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["nickname"]
-    objects = CustomUserManager()
 
     def get_absolute_url(self):
         return reverse("user:detail", kwargs={"nickname": self.nickname})

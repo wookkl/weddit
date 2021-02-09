@@ -15,7 +15,6 @@ class CommunityForm(models.ModelForm):
     avatar = forms.ImageField(required=False)
     photo = forms.ImageField(required=False)
 
-    # the request is now available, add it to the instance data
     def __init__(self, *args, **kwargs):
         self.reqeust = kwargs.pop("request")
         super().__init__(*args, **kwargs)
