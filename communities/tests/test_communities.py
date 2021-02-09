@@ -110,6 +110,7 @@ class PrivateCommunityTest(TestCase):
                 "password": "password123@",
             }
         )
+        self.client.force_login(self.user)
 
     def test_retrieve_communities(self):
         """Test retrieving a list of communities"""
@@ -121,11 +122,13 @@ class PrivateCommunityTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(2, communities.count())
 
-    # def test_create_new_community_success(self):
-    #     payload = {
-    #         "name": "testname",
-    #         "description": "test description",
-    #     }
-    #     res = self.client.post(COMMUNITY_LIST_URL, payload)
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertTrue(Community.objects.filter(name=payload["name"]).exists())
+    def test_create_new_community_success(self):
+        payload = {
+            "creater": self.user,
+            "name": "testname",
+            "description": "test description",
+        }
+        res = self.client.post(COMMUNITY_CREATE_URL, payload)
+        community = Community.objects.get(name=payload["name"])
+        self.assertRedirects(res, community.get_absolute_url())
+        self.assertTrue(Community.objects.filter(name=payload["name"]).exists())

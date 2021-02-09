@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
 {% block page_title %}
-    Create - 
+    {{community_obj.name}} - 
 {% endblock page_title %}
     
 {% block content %}
-    {% include 'mixins/form.html' with form=form cta="Create" method="post" %}
+    
+    <h1>{{ community_obj.name }}</h1>
+    <p>{{ community_obj.description }}</p>
+        
 {% endblock content %}
     

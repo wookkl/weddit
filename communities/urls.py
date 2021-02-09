@@ -7,4 +7,5 @@ app_name = "communities"
 urlpatterns = [
     path("", views.CommunityListView.as_view(), name="list"),
     path("create/", views.CommunityCreateView.as_view(), name="create"),
+    path("<slug:slug>", views.CommunityDetailView.as_view(), name="detail"),
 ]
