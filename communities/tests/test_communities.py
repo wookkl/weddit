@@ -1,44 +1,23 @@
 import tempfile
 
 from django.test import TestCase, Client
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.core.validators import ValidationError
 from django.conf import settings
 
+
 from communities.models import Community
+from core.tests.sample_objects import get_sample_user, get_sample_community
 
 COMMUNITY_LIST_URL = reverse("communities:list")
 COMMUNITY_CREATE_URL = reverse("communities:create")
-
-
-def create_user(**params):
-    return get_user_model().objects.create_user(**params)
-
-
-def sample_community(creater, **params):
-    defaults = {
-        "creater": creater,
-        "name": "testTitle",
-        "description": "this is test community",
-        "avatar": tempfile.NamedTemporaryFile(suffix=".jpg").name,
-        "photo": tempfile.NamedTemporaryFile(suffix=".png").name,
-    }
-    defaults.update(params)
-    return Community.objects.create(**defaults)
 
 
 class CommunityModelTests(TestCase):
     """Model test"""
 
     def setUp(self):
-        self.user = create_user(
-            **{
-                "email": "test@gmail.com",
-                "nickname": "testname",
-                "password": "password123@",
-            }
-        )
+        self.user = get_sample_user()
 
     def test_create_new_community_success(self):
         """Test creating a new community success"""
@@ -86,6 +65,7 @@ class PublicCommunityTests(TestCase):
 
     def test_auth_required(self):
         """ Test that authentication is required """
+
         payload = {
             "name": "testname",
             "description": "test description",
@@ -103,19 +83,14 @@ class PrivateCommunityTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = create_user(
-            **{
-                "email": "test@gmail.com",
-                "nickname": "testname",
-                "password": "password123@",
-            }
-        )
+        self.user = get_sample_user()
         self.client.force_login(self.user)
 
     def test_retrieve_communities(self):
         """Test retrieving a list of communities"""
-        sample_community(creater=self.user)
-        sample_community(creater=self.user, **{"name": "test2"})
+
+        get_sample_community(creater=self.user)
+        get_sample_community(creater=self.user, **{"name": "test2"})
 
         res = self.client.get(COMMUNITY_LIST_URL)
         communities = Community.objects.all().order_by("-id")

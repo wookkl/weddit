@@ -24,10 +24,12 @@ class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, nickname, password=None):
         """Customize create user function"""
+
         return self._create(email, nickname, password)
 
     def create_superuser(self, email, nickname, password=None):
         """Customize create superuser function"""
+
         superuser = self._create(email, nickname, password)
         superuser.is_superuser = True
         superuser.is_staff = True

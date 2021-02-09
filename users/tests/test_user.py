@@ -1,7 +1,10 @@
 from django.test import TestCase, Client
 from django.core.validators import ValidationError
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+
+from core.tests.sample_objects import get_sample_user
+
 
 SIGN_UP_URL = reverse("sign-up")
 LOGOUT_URL = reverse("logout")
@@ -14,15 +17,12 @@ def get_user_retrieve_url(nickname):
     return reverse("user:detail", kwargs={"nickname": nickname})
 
 
-def create_user(**params):
-    return get_user_model().objects.create_user(**params)
-
-
 class UserModelTests(TestCase):
     """Model test"""
 
     def test_create_new_user_success(self):
         """Test creating a new user success"""
+
         email = "test@gmail.com"
         nickname = "testname"
         password = "password123@"
@@ -102,7 +102,7 @@ class PublicUserTests(TestCase):
             "password2": "userpass123@",
         }
 
-        create_user(
+        get_sample_user(
             **{
                 "email": "test@gmail.com",
                 "nickname": "John",
@@ -134,7 +134,7 @@ class PrivateUserTests(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = create_user(
+        self.user = get_sample_user(
             **{
                 "email": "test@gmail.com",
                 "nickname": "testname",
@@ -164,7 +164,7 @@ class PrivateUserTests(TestCase):
 
     def test_update_new_email_invalid(self):
         """Test updating email that already exists fails"""
-        create_user(
+        get_sample_user(
             **{
                 "email": "newemail@gmail.com",
                 "nickname": "newname",
@@ -187,7 +187,7 @@ class PrivateUserTests(TestCase):
 
     def test_update_new_nickname_invalid(self):
         """Test updating nickname that already exists fails"""
-        create_user(
+        get_sample_user(
             **{
                 "email": "newemail@gmail.com",
                 "nickname": "samename",
