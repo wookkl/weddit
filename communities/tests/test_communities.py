@@ -9,8 +9,8 @@ from django.conf import settings
 from communities.models import Community
 from core.tests.sample_objects import get_sample_user, get_sample_community
 
-COMMUNITY_LIST_URL = reverse("communities:list")
-COMMUNITY_CREATE_URL = reverse("communities:create")
+LIST_COMMUNITY_URL = reverse("communities:list")
+CREATE_COMMUNITY_URL = reverse("communities:create")
 
 
 class CommunityModelTests(TestCase):
@@ -71,7 +71,7 @@ class PublicCommunityTests(TestCase):
             "name": "testname",
             "description": "test description",
         }
-        res = self.client.post(COMMUNITY_CREATE_URL, payload)
+        res = self.client.post(CREATE_COMMUNITY_URL, payload)
 
         self.assertRedirects(
             res,
@@ -92,19 +92,20 @@ class PrivateCommunityTest(TestCase):
 
         get_sample_community(creater=self.user)
         get_sample_community(creater=self.user, **{"name": "test2"})
-        res = self.client.get(COMMUNITY_LIST_URL)
+        res = self.client.get(LIST_COMMUNITY_URL)
         communities = Community.objects.all().order_by("-id")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(2, communities.count())
 
     def test_create_new_community_success(self):
+        """Test creating a new community"""
         payload = {
             "creater": self.user,
             "name": "testname",
             "description": "test description",
         }
-        res = self.client.post(COMMUNITY_CREATE_URL, payload)
+        res = self.client.post(CREATE_COMMUNITY_URL, payload)
         community = Community.objects.get(name=payload["name"])
 
         self.assertRedirects(res, community.get_absolute_url())

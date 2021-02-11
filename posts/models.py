@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from communities.models import Community
 
@@ -18,3 +19,6 @@ class Post(models.Model):
 
     def get_photo_url(self):
         return self.photo.url
+
+    def get_absolute_url(self):
+        return reverse("posts:detail", kwargs={"pk": self.pk})

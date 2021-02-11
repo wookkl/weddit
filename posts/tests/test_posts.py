@@ -1,6 +1,8 @@
 import tempfile
 
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.conf import settings
 
 from core.tests.sample_objects import (
     get_sample_user,
@@ -10,8 +12,11 @@ from core.tests.sample_objects import (
 
 from posts.models import Post
 
+CREATE_POST_URL = reverse("posts:create")
+LIST_POST_URL = reverse("posts:list")
 
-class PostsModelTests(TestCase):
+
+class PostModelTests(TestCase):
     """Model tests"""
 
     def setUp(self):
@@ -33,3 +38,59 @@ class PostsModelTests(TestCase):
 
         def __str__(self):
             return f"{self.writer}'s post"
+
+
+class PublicPostTests(TestCase):
+    """Public post tests"""
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_auth_required(self):
+        """Test that authentication is required"""
+        user = get_sample_user()
+        community = get_sample_community(creater=user)
+        payload = {"community_pk": community.pk, "content": "test content"}
+        res = self.client.post(CREATE_POST_URL, payload)
+
+        self.assertRedirects(
+            res,
+            settings.LOGIN_URL + "?next=/posts/create/",
+        )
+
+        with self.assertRaises(Post.DoesNotExist):
+            Post.objects.get(community=community)
+
+
+class PrivatePostTests(TestCase):
+    """Private post tests"""
+
+    def setUp(self):
+        self.user = get_sample_user()
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.community = get_sample_community()
+
+    def test_retrieve_posts(self):
+        """Test retrieving a list of posts"""
+
+        get_sample_post(writer=self.user, community=self.community)
+        get_sample_post(
+            writer=self.user, community=self.community, **{"content": "content2!!"}
+        )
+        res = self.client.get(LIST_POST_URL)
+
+        self.assertEqual(res.status_code, 200)
+
+    def test_create_post_success(self):
+        """Test creating a new post"""
+        payload = {
+            "community_pk": self.community.pk,
+            "content": "sample content",
+            "photo": tempfile.NamedTemporaryFile(suffix=".jpg").name,
+        }
+        res = self.client.post(CREATE_POST_URL, payload)
+        post = Post.objects.get(content=payload["content"])
+
+        self.assertEqual(post.content, payload["content"])
+        self.assertRedirects(res, post.get_absolute_url())

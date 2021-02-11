@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    Posts - 
+{% endblock page_title %}
+    
+{% block content %}
+    
+    {% for post in obj_list %}
+        {{ post.content }}
+    {% endfor %}
+        
+{% endblock content %}
+    

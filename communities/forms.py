@@ -1,11 +1,10 @@
-from django.forms import models
 from django import forms
 from django.utils.translation import gettext as _
 
 from .models import Community
 
 
-class CommunityForm(models.ModelForm):
+class CommunityForm(forms.ModelForm):
     """Community model form definition"""
 
     name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "NAME"}))
