@@ -1,14 +1,4 @@
+{% load bootstrap4 %}
 <div>
-    {% if errors %}
-    <ul>
-        {% for error in errors %}
-            <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
-<div>
-    {% for field in form %}
-        <div>{{ field }}</div>
-    {% endfor %}
+    {% bootstrap_form form show_label=False %}
 </div>

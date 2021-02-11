@@ -7,4 +7,5 @@
 {% block content %}
     <h1>Warnng:Account deletion cannot be undone. If you're absolutely sure you want to delete youa account. enter your password to continue</h1>
     {% include 'mixins/form.html' with form=form cta="Delete my account"%}
+    <a href="{% url 'settings' %}">cancel</a>
 {% endblock content %}

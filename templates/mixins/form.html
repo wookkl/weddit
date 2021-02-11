@@ -1,4 +1,6 @@
-<form method="POST" enctype="multipart/form-data">
+{% load bootstrap4 %}
+
+<form method="POST" enctype="multipart/form-data" class="align-middle">
     {% csrf_token %}
     {% include 'mixins/form_input.html' with form=form %}
     <input type="submit" value="{{ cta }}">
