@@ -21,11 +21,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             alphanumeric_validator,
         ],
     )
+    avatar = models.ImageField(null=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"

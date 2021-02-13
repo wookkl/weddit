@@ -73,7 +73,7 @@ def logout_view(request):
 
 
 @require_http_methods(["GET"])
-def detail_view(request, nickname):
+def user_detail_view(request, nickname):
     """User detail view"""
     if request.method == "GET":
         try:
@@ -92,8 +92,6 @@ def settings_view(request):
 def update_email_view(request):
     errors = []
     if request.method == "POST":
-        if "cancel" in request.POST:
-            return redirect(USER_SETTINGS_URL)
         form = forms.UpdateEmailForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
@@ -111,8 +109,6 @@ def update_email_view(request):
 def update_nickname_view(request):
     errors = []
     if request.method == "POST":
-        if "cancel" in request.POST:
-            return redirect(USER_SETTINGS_URL)
         form = forms.UpdateNicknameForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
@@ -130,8 +126,6 @@ def update_nickname_view(request):
 def update_password_view(request):
     errors = []
     if request.method == "POST":
-        if "cancel" in request.POST:
-            return redirect(USER_SETTINGS_URL)
         form = forms.UpdatePasswordForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
@@ -146,11 +140,23 @@ def update_password_view(request):
 
 
 @login_required
-def delete_view(request):
+def update_avatar_view(request):
     errors = []
     if request.method == "POST":
-        if "cancel" in request.POST:
-            return redirect(USER_SETTINGS_URL)
+        request.user.avatar = request.FILES.get("new_avatar", None)
+        request.user.save()
+        messages.success(request, MESSAGE_UPDATED)
+        return redirect(USER_SETTINGS_URL)
+    form = forms.UpdateAvatarForm()
+    return render(
+        request, "users/update.html", {"form": form, "errors": errors}, status=200
+    )
+
+
+@login_required
+def user_delete_view(request):
+    errors = []
+    if request.method == "POST":
         form = forms.DeleteAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()

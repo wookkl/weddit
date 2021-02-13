@@ -5,10 +5,18 @@
 {% endblock page_title %}
     
 {% block content %}
-    
-    {% for post in user.posts %}
-        {{post.content}}
-    {% endfor %}
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <div>
+        {% if user.avatar %}
+            <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ user.avatar.url }}"/>
+        {% else %}
+            <div class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 150px;height:150px;"><span class="fs-1">{{user.nickname|first}}</span></div>
+        {% endif %}
+        </div>
+        <span>{{ user.nickname }}</span>
+        <div class="border w-100 my-4"></div>
+        <h3>Posts</h3>
+    </div>
             
 {% endblock content %}
     

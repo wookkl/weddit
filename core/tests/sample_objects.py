@@ -11,6 +11,7 @@ def get_sample_user(**params):
     defaults = {
         "email": "test@gmail.com",
         "nickname": "testname",
+        "avatar": tempfile.NamedTemporaryFile(suffix=".jpg").name,
         "password": "password123@",
     }
     defaults.update(**params)

@@ -7,13 +7,40 @@
 {% block content %}
     <div class="container-sm d-flex flex-column justify-content-evenly align-items-between h-50 w-50 ">
         <h3>Settings</h3>
-        <div class="d-flex justify-content-between">
-            <span >Email address</span>
-            <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-email' %}">Change</a>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div>
+                    <span class="fs-5 mr-2">Avatar</span>
+                </div>
+                <div>
+                    {% if user.avatar %}
+                        <img class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 75px;height:75px;" src="{{ user.avatar.url }}"/>
+                    {% else %}
+                        <div class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 75px;height:75px;"><span>{{user.nickname|first}}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-avatar' %}">Change</a>
+            </div>
         </div>
         <div class="d-flex justify-content-between">
-            <span>Nickname</span>
-            <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-nickname' %}">Change</a>
+            <div class="d-flex flex-column">
+                <span class="fs-5">Email address</span>
+                <span class="text-secondary">{{ user.email }}</span>
+            </div>
+            <div>
+                <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-email' %}">Change</a>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column">
+                <span class="fs-5">Nickname</span>
+                <span class="text-secondary">{{ user.nickname }}</span>
+            </div>
+            <div>
+                <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-nickname' %}">Change</a>
+            </div>
         </div>
         <div class="d-flex justify-content-between">
             <span>Change password</span>

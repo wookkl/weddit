@@ -143,6 +143,13 @@ class UpdateNicknameForm(forms.Form):
         return self.user
 
 
+class UpdateAvatarForm(forms.Form):
+    new_avatar = forms.ImageField(required=False)
+
+    def save(self, commit=True):
+        return self.user
+
+
 class UpdatePasswordForm(forms.Form):
 
     current_password = forms.CharField(

@@ -10,7 +10,15 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ("email", "nickname", "is_staff", "is_superuser")
     fieldsets = (
         (None, {"fields": ("id", "email", "password")}),
-        (_("Personal Info"), {"fields": ("nickname",)}),
+        (
+            _("Personal Info"),
+            {
+                "fields": (
+                    "avatar",
+                    "nickname",
+                )
+            },
+        ),
         (
             _("Permissions"),
             {"fields": ("is_active", "is_staff", "is_superuser")},
