@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "users",
     "communities",
     "posts",
+    "subscriptions",
     "bootstrap4",
 ]
 
