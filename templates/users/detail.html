@@ -5,6 +5,10 @@
 {% endblock page_title %}
     
 {% block content %}
-    Here is {{ user.nickname}}'s home
+    
+    {% for post in user.posts %}
+        {{post.content}}
+    {% endfor %}
+            
 {% endblock content %}
     

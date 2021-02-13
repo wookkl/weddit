@@ -5,6 +5,9 @@
 {% endblock page_title %}
     
 {% block content %}
-    {% include 'mixins/form.html' with form=form cta="Sign up" method="post" %}
+    <div class="container d-flex flex-column justify-content-center align-items-center h-50">
+        <h2 class="mb-2">SIGN UP</h2>
+        {% include 'mixins/form.html' with form=form cta="Sign up" method="post" width="50"%}
+    </div>
 {% endblock content %}
     

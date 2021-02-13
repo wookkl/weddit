@@ -5,20 +5,23 @@
 {% endblock page_title %}
     
 {% block content %}
-    <div>
-        <span>Email address</span>
-        <a href="{% url 'update-email' %}">Change</a>
-    </div>
-    <div>
-        <span>Nickname</span>
-        <a href="{% url 'update-nickname' %}">Change</a>
-    </div>
-    <div>
-        <span>Change password</span>
-        <a href="{% url 'update-password' %}">Change</a>
-    </div>
-    <div>
-        <a href="{% url 'delete-account' %}">DELETE ACCOUNT</a>
-    </div>
+    <div class="container-sm d-flex flex-column justify-content-evenly align-items-between h-50 w-50 ">
+        <h3>Settings</h3>
+        <div class="d-flex justify-content-between">
+            <span >Email address</span>
+            <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-email' %}">Change</a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Nickname</span>
+            <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-nickname' %}">Change</a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Change password</span>
+            <a class="btn btn-outline-primary rounded-pill" href="{% url 'update-password' %}">Change</a>
+        </div>
+        <div>
+            <a class="btn btn-outline-danger"href="{% url 'delete-account' %}">DELETE ACCOUNT</a>
+        </div>
+    </div>  
 {% endblock content %}
     

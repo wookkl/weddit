@@ -5,7 +5,8 @@
 {% endblock page_title %}
     
 {% block content %}
-    {% include 'mixins/form.html' with form=form cta="Update"%}
-    <a href="{% url 'settings' %}">Cancel</a>
+    <div class="container d-flex flex-column justify-content-center align-items-center h-50">
+         {% include 'mixins/form.html' with form=form cta="Update" width="25" %}
+    </div>
 {% endblock content %}
     
