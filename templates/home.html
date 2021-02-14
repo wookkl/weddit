@@ -1,6 +1,34 @@
 {% extends 'base.html' %}
 
+{% block page_title %}
+    Home - 
+{% endblock page_title %}
+
 {% block content %}
-    {% include 'posts/list.html' %}
+<div class="d-flex px-5 justify-content-center gap-3">
+  <div style="max-width: 600px; width: 40rem;">
+    {% include 'mixins/post_cards.html' with posts=posts %}
+  </div>
+  <div class="w-25">
+    <ul class="list-group w-100">
+      <li class="list-group-item">Lastest communities</li>
+      {% for community in communities %}
+        <li class="list-group-item d-flex gap-3 align-items-center">
+          <span>{{ forloop.counter }}.</span>
+          {% if community.avatar %}
+            <img class="border-0  p-0 rounded-circle" style="width: 40px;height:40px;" src="{{ community.avatar.url }}"/>
+          {% else %}
+            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 40px;height:40px;"><span class="fs-1">{{community.nickname|first}}</span></div>
+          {% endif %}
+          <a class="text-dark" href="{% url 'communities:detail' community.slug %}" style="text-decoration: none;">{{ community.name }}</a>
+        </li>
+      {% endfor %}
+        <li class="list-group-item">
+          <a class="btn rounded-pill bg-primary text-white w-100" href="{% url 'communities:list' %}">View All</a>
+        </li>
+    </ul>
+  </div>
+</div>
 {% endblock content %}
     
+  
