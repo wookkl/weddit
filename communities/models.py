@@ -4,9 +4,10 @@ from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 from core.validators import alphanumeric_validator
+from core.models import AbstractTimeStamp
 
 
-class Community(models.Model):
+class Community(AbstractTimeStamp):
     """Community model definition"""
 
     name = models.CharField(

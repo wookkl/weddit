@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from core.models import AbstractTimeStamp
 from communities.models import Community
 
 
-class Subscription(models.Model):
+class Subscription(AbstractTimeStamp):
     """Subscription model definition"""
 
     subscriber = models.ForeignKey(

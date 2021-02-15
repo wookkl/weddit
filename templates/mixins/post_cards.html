@@ -1,17 +1,19 @@
 {% for post in posts %}
-    <div class="card mb-3 p-2">
-        <div>
-            {% if post.community.avatar %}
-            <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
-            {% else %}
-            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{community.nickname|first}}</span></div>
-            {% endif %}
-            <small>{{ post.community.name }}</small>
-            <small class="text-muted"> • Posted by {{ post.writer.nickname }}</small>
-        </div>
-        <div class="card-body">
-            <p class="card-text">{{ post.content }}</p>
-        </div>
-        <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo">
-    </div>  
+    <a class="text-dark" style="text-decoration: none;" href="{% url 'posts:detail' post.pk %}">
+        <div class="card mb-3 p-2">
+            <div>
+                {% if post.community.avatar %}
+                <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
+                {% else %}
+                <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{community.nickname|first}}</span></div>
+                {% endif %}
+                <small>{{ post.community.name }}</small>
+                <small class="text-muted"> • Posted by {{ post.writer.nickname }}</small>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ post.content }}</p>
+            </div>
+            <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo">
+        </div>  
+    </a>
 {% endfor %}

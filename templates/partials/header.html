@@ -1,9 +1,9 @@
 <nav class="navbar navbar-light bg-light navbar-expand-lg position-fixed w-100 top-0">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">Weddit</a>
-        <form class="d-flex mb-0 align-items-bottom w-50 ">
-            <input class="form-control me-2 btn-outline" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+        <form class="d-flex mb-0 w-50 border bg-white rounded-3">
+            <button class="border-0 mr-1 ml-2 text-secondary bg-white" type="submit"><i class="fas fa-search"></i></button>
+            <input class="form-control border-0" type="search" placeholder="Search" aria-label="Search"/>
         </form>
         <ul class="navbar-nav d-flex">
         {% if user.is_authenticated %}

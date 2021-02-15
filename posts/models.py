@@ -3,9 +3,10 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from communities.models import Community
+from core.models import AbstractTimeStamp
 
 
-class Post(models.Model):
+class Post(AbstractTimeStamp):
     """Post model definition"""
 
     writer = models.ForeignKey(
