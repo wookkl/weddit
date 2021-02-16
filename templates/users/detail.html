@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
 {% block page_title %}
-    {{ user.nickname }} - 
+    {{ user_obj.nickname }} - 
 {% endblock page_title %}
     
 {% block content %}
     <div class="container d-flex flex-column justify-content-center align-items-center">
         <div>
         {% if user.avatar %}
-            <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ user.avatar.url }}"/>
+            <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ user_obj.avatar.url }}"/>
         {% else %}
-            <div class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 150px;height:150px;"><span class="fs-1">{{user.nickname|first}}</span></div>
+            <div class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 150px;height:150px;"><span class="fs-1">{{user_obj.nickname|first}}</span></div>
         {% endif %}
         </div>
-        <span>{{ user.nickname }}</span>
+        <span>{{ user_obj.nickname }}</span>
         <div class="border w-100 my-4"></div>
         <h3>Posts</h3>
     </div>

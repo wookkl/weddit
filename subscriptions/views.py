@@ -9,23 +9,21 @@ from .models import Subscription
 from communities.models import Community
 
 
-@method_decorator(login_required, name="dispatch")
-class SubscriptionToggleView(View):
+@login_required
+def subscription_toggle_view(request):
     """Subscription toggle view"""
-
-    model = Subscription
-
-    def post(self, request, *args, **kwargs):
+    if request.method == "POST":
+        print(request.POST)
+        community_pk = request.POST.get("community_pk", None)
         try:
-            community = Community.objects.get(pk=kwargs.get("community_pk"))
+            community = Community.objects.get(pk=community_pk)
         except Community.DoesNotExist:
-            return Http404()
+            return redirect(Http404())
         try:
             subscription = Subscription.objects.get(
-                subscriber=self.user, community=community
+                subscriber=request.user, community=community
             )
             subscription.delete()
         except Subscription.DoesNotExist:
-            Subscription.objects.create(subscriber=self.user, community=community)
-
+            Subscription.objects.create(subscriber=request.user, community=community)
         return redirect(community.get_absolute_url())

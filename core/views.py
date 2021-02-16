@@ -9,7 +9,7 @@ from posts.models import Post
 @require_http_methods(["GET"])
 def home_view(request):
     """Home view"""
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by("-created_at")
     page = request.GET.get("page", 1)
     paginator = Paginator(posts, 20)
     try:

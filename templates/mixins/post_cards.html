@@ -1,19 +1,47 @@
 {% for post in posts %}
-    <a class="text-dark" style="text-decoration: none;" href="{% url 'posts:detail' post.pk %}">
-        <div class="card mb-3 p-2">
-            <div>
+    <div id="post_pk_{{ post.pk }}" class="card mb-3 p-2 card-link mx-auto">
+        <div class="d-flex justify-content-between">
+            <div class="text-muted">
                 {% if post.community.avatar %}
                 <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
                 {% else %}
                 <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{community.nickname|first}}</span></div>
                 {% endif %}
-                <small>{{ post.community.name }}</small>
-                <small class="text-muted"> • Posted by {{ post.writer.nickname }}</small>
+                <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
+                <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
             </div>
-            <div class="card-body">
-                <p class="card-text">{{ post.content }}</p>
+            <div>   
+                <form method="post" action="{% url 'subscriptions:toggle' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
+                    <button class="btn btn-primary rounded-pill px-2 py-0 align-baseline" type="submit">
+                        <small>
+                        {% if is_subscribed %}
+                            <i class="fas fa-plus mx-1"></i>Join
+                        {% else %}
+                            <i class="fas fa-plus mx-1"></i>Drop
+                        {% endif %}
+                        </small></button>
+                </form>
             </div>
-            <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo">
-        </div>  
-    </a>
+        </div>    
+        <div class="card-body">
+            <p class="card-text">{{ post.content }}</p>
+        </div>
+        <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
+    </div>  
 {% endfor %}
+
+<style>
+    .card-link:hover{
+        cursor: pointer;
+    }
+</style>
+<script>
+    $(document).on('click', '.card-link', function () {
+        var url = "{% url 'posts:detail' 1 %}";
+        var pk = $(this).attr('id');
+
+        document.location.href = url.replace('pk', pk);
+    });
+</script>

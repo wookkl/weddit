@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import SubscriptionToggleView
+from .views import subscription_toggle_view
 
 app_name = "subscriptions"
 
 urlpatterns = [
-    path("toggle/", SubscriptionToggleView.as_view(), name="toggle"),
+    path("toggle/", subscription_toggle_view, name="toggle"),
 ]
