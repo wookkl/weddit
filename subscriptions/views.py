@@ -13,7 +13,7 @@ from communities.models import Community
 def subscription_toggle_view(request):
     """Subscription toggle view"""
     if request.method == "POST":
-        print(request.POST)
+        next_url = request.GET.get("next", None)
         community_pk = request.POST.get("community_pk", None)
         try:
             community = Community.objects.get(pk=community_pk)
@@ -26,4 +26,7 @@ def subscription_toggle_view(request):
             subscription.delete()
         except Subscription.DoesNotExist:
             Subscription.objects.create(subscriber=request.user, community=community)
-        return redirect(community.get_absolute_url())
+        if next_url:
+            return redirect(next_url)
+        else:
+            return redirect(community.get_absolute_url())

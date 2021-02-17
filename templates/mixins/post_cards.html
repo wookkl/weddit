@@ -5,23 +5,24 @@
                 {% if post.community.avatar %}
                 <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
                 {% else %}
-                <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{community.nickname|first}}</span></div>
+                <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{ community.nickname|first }}</span></div>
                 {% endif %}
                 <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
                 <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
             </div>
             <div>   
-                <form method="post" action="{% url 'subscriptions:toggle' %}">
+                <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
                     {% csrf_token %}
                     <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
-                    <button class="btn btn-primary rounded-pill px-2 py-0 align-baseline" type="submit">
+                    <button class="btn {% if post.is_subscribed %} btn-danger {% else %} btn-primary {% endif %} rounded-pill px-2 py-0 align-baseline" type="submit">
                         <small>
-                        {% if is_subscribed %}
-                            <i class="fas fa-plus mx-1"></i>Join
-                        {% else %}
+                        {% if post.is_subscribed %}
                             <i class="fas fa-plus mx-1"></i>Drop
+                        {% else %}
+                            <i class="fas fa-plus mx-1"></i>Join
                         {% endif %}
-                        </small></button>
+                        </small>
+                    </button>
                 </form>
             </div>
         </div>    
