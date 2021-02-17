@@ -58,6 +58,23 @@ class PostDetailView(DetailView):
 
     model = Post
     template_name = "posts/detail.html"
+    context_object_name = "post_obj"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post_obj = context.get("post_obj")
+        is_subscribed = (
+            self.request.user.subscriptions.all()
+            .filter(subscriber=self.request.user, community=post_obj.community)
+            .exists()
+        )
+
+        if is_subscribed:
+            post_obj.is_subscribed = True
+        else:
+            post_obj.is_subscribed = False
+        context["post_obj"] = post_obj
+        return context
 
 
 @login_required

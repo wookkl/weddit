@@ -41,5 +41,14 @@ class Community(AbstractTimeStamp):
     def get_avatar_url(self):
         return self.avatar.url
 
+    def get_subscriber_count(self):
+        count = self.subscriptions.count()
+        count = 12000
+        if count >= 1000000:
+            return f"{count / 1000000:.2f}".rstrip("0").rstrip(".") + "m"
+        elif count >= 1000:
+            return f"{count / 1000:.2f}".rstrip("0").rstrip(".") + "k"
+        return f"{count}"
+
     class Meta:
         verbose_name_plural = "communities"

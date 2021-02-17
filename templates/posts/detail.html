@@ -1,12 +1,58 @@
 {% extends 'base.html' %}
 
 {% block page_title %}
-    {{post_obj.name}} - 
+    {{ post_obj.content|truncatewords:5}} - 
 {% endblock page_title %}
     
 {% block content %}
-    
-    <h1>{{ post_obj.content }}</h1>
-    <img src="{{ post_obj.photo.url }}" alt="photo"/>
-{% endblock content %}
+    <div class="d-flex justify-content-center gap-3">
+        <div style="max-width: 1000px; width: 50rem;">
+            <div class="card mb-3 p-2 mx-auto">
+                <div class="d-flex justify-content-between">
+                    <div class="text-muted">
+                        {% if post_obj.community.avatar %}
+                        <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post_obj.community.avatar.url }}"/>
+                        {% else %}
+                        <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{ post_obj.community.nickname|first }}</span></div>
+                        {% endif %}
+                        <small><a class="link-secondary" href="{% url 'communities:detail' post_obj.community.slug %}">{{ post_obj.community.name }}</a></small>
+                        <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post_obj.writer.nickname %}">{{ post_obj.writer.nickname }}</a> {{ post_obj.get_created_time }}</small>
+                    </div>
+                </div>    
+                <div class="card-body">
+                    <p class="card-text">{{ post_obj.content }}</p>
+                </div>
+                <img class="mx-auto" src="{{ post_obj.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
+            </div>  
+        </div>
+        <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
+            <img class="rounded-top"src="{{ post_obj.community.photo.url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
+            <div class="p-3">
+                <div class="mb-1">
+                    <img class="rounded-circle" src="{{ post_obj.community.avatar.url }}" style="width: 4rem; height: 4rem; object-fit: cover;"/>
+                    <span>{{ post_obj.community.name }}</span>
+                </div>
+                <p class="fw-light">{{ post_obj.community.description }}</p>
+                <div class="d-flex flex-column">
+                    <big>{{ post_obj.community.get_subscriber_count }}</big>
+                    <small>Members</small>
+                </div>
+                <div class="my-2" style="width: 100%; height: 1px; background-color:lightgray;"></div>
+                <div class="fw-light my-2">
+                    <i class="fas fa-birthday-cake mr-2"></i>
+                    <span>Created {{ post_obj.community.created_at|date:'Y. m. d' }}</span>
+                </div>
+                <form class="mb-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="community_pk" value="{{ post_obj.community.pk }}"/>
+                    <button class="w-100 btn{% if post_obj.is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
+                        <small class="fw-bold">
+                        {% if post_obj.is_subscribed %}Drop{% else %}Join{% endif %}
+                        </small>
+                    </button>
+                </form> 
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
     

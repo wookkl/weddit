@@ -7,7 +7,9 @@
 {% block content %}
 <div class="d-flex px-5 justify-content-center gap-3">
   <div style="max-width: 600px; width: 40rem;">
-    {% include 'mixins/post_cards.html' with posts=posts %}
+    {% for post in posts %}
+      {% include 'mixins/post_card.html' with post=post %}
+    {% endfor %}
   </div>
   <div class="w-25">
     <ul class="list-group w-100">
