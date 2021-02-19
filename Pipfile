@@ -11,6 +11,8 @@ black = "*"
 django = "==2.2.5"
 pillow = "*"
 django-bootstrap4 = "*"
+requests = "*"
+django-seed = "*"
 
 [requires]
 python_version = "3.8"

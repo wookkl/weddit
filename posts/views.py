@@ -62,6 +62,8 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if not self.request.user.is_authenticated:
+            return context
         post_obj = context.get("post_obj")
         is_subscribed = (
             self.request.user.subscriptions.all()

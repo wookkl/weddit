@@ -20,17 +20,18 @@ def home_view(request):
     except EmptyPage:
         paginated_posts = paginator.page(paginator.num_pages)
 
-    for post in paginated_posts:
-        is_subscribed = (
-            request.user.subscriptions.all()
-            .filter(subscriber=request.user, community=post.community)
-            .exists()
-        )
+    if request.user.is_authenticated:
+        for post in paginated_posts:
+            is_subscribed = (
+                request.user.subscriptions.all()
+                .filter(subscriber=request.user, community=post.community)
+                .exists()
+            )
 
-        if is_subscribed:
-            post.is_subscribed = True
-        else:
-            post.is_subscribed = False
+            if is_subscribed:
+                post.is_subscribed = True
+            else:
+                post.is_subscribed = False
 
     community_obj = Community.objects.all().order_by("-pk")[:10]
 
