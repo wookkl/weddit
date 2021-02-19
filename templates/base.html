@@ -40,8 +40,9 @@
         $(document).on('click', '.card-link', function () {
             var url = "{% url 'posts:detail' 1 %}";
             var pk = $(this).attr('id');
-    
-            document.location.href = url.replace('pk', pk);
+            pk = pk.replace('post_pk_','');
+            document.location.href = url.replace('1', pk);
+
         });
     </script>
 </html>

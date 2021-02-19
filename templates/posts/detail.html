@@ -9,11 +9,11 @@
         <div style="max-width: 1000px; width: 50rem;">
             <div class="card mb-3 p-2 mx-auto">
                 <div class="d-flex justify-content-between">
-                    <div class="text-muted">
+                    <div class="text-muted d-flex gap-1">
                         {% if post_obj.community.avatar %}
-                        <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post_obj.community.avatar.url }}"/>
+                            <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post_obj.community.avatar.url }}"/>
                         {% else %}
-                        <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{ post_obj.community.nickname|first }}</span></div>
+                            <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span style="font-size: 1rem;">{{ post_obj.community.name|first }}</span></div>
                         {% endif %}
                         <small><a class="link-secondary" href="{% url 'communities:detail' post_obj.community.slug %}">{{ post_obj.community.name }}</a></small>
                         <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post_obj.writer.nickname %}">{{ post_obj.writer.nickname }}</a> {{ post_obj.get_created_time }}</small>
@@ -28,8 +28,12 @@
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
             <img class="rounded-top"src="{{ post_obj.community.photo.url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
             <div class="p-3">
-                <div class="mb-1">
-                    <img class="rounded-circle" src="{{ post_obj.community.avatar.url }}" style="width: 4rem; height: 4rem; object-fit: cover;"/>
+                <div class="mb-1 d-flex align-items-center gap-2">
+                    {% if post_obj.community.avatar %}
+                        <img class="rounded-circle" src="{{ post_obj.community.avatar.url }}" style="width: 4rem; height: 4rem; object-fit: cover;"/>
+                    {% else %}
+                        <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 4rem;height:4rem;"><span style="font-size: 2rem;">{{post_obj.community.name|first}}</span></div>
+                    {% endif %}
                     <span>{{ post_obj.community.name }}</span>
                 </div>
                 <p class="fw-light">{{ post_obj.community.description }}</p>
@@ -54,5 +58,5 @@
             </div>
         </div>
     </div>
-    {% endblock content %}
+{% endblock content %}
     

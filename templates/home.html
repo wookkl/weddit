@@ -20,7 +20,7 @@
           {% if community.avatar %}
             <img class="border-0  p-0 rounded-circle" style="width: 40px;height:40px;" src="{{ community.avatar.url }}"/>
           {% else %}
-            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 40px;height:40px;"><span class="fs-1">{{community.nickname|first}}</span></div>
+            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 2.5rem; height:2.5rem;"><span style="font-size: 1.5rem;">{{community.name|first}}</span></div>
           {% endif %}
           <a class="text-dark" href="{% url 'communities:detail' community.slug %}" style="text-decoration: none;">{{ community.name }}</a>
         </li>

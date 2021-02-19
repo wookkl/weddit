@@ -1,10 +1,10 @@
 <div id="post_pk_{{ post.pk }}" class="card mb-3 p-2 card-link mx-auto">
     <div class="d-flex justify-content-between">
-        <div class="text-muted">
+        <div class="text-muted d-flex gap-2">
             {% if post.community.avatar %}
-            <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
+                <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
             {% else %}
-            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span class="fs-1">{{ community.nickname|first }}</span></div>
+                <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span style="font-size: 1rem;">{{ post.community.name|first }}</span></div>
             {% endif %}
             <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
             <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
