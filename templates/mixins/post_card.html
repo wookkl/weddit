@@ -13,10 +13,10 @@
             <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
                 {% csrf_token %}
                 <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
-                <button class="btn {% if post.is_subscribed %} btn-danger {% else %} btn-primary {% endif %} rounded-pill px-2 py-0 align-baseline" type="submit">
+                <button class="btn {% if post.community.is_subscribed %} btn-danger {% else %} btn-primary {% endif %} rounded-pill px-2 py-0 align-baseline" type="submit">
                     <small>
-                    {% if post.is_subscribed %}
-                        <i class="fas fa-plus mx-1"></i>Drop
+                    {% if post.community.is_subscribed %}
+                        <i class="fas fa-minus mx-1"></i>Drop
                     {% else %}
                         <i class="fas fa-plus mx-1"></i>Join
                     {% endif %}

@@ -22,6 +22,7 @@ class Community(AbstractTimeStamp):
         null=True,
         related_name="communities",
     )
+    title = models.CharField(max_length=30, null=True)
     description = models.CharField(max_length=255, blank=True, default="")
     avatar = models.ImageField(null=True, upload_to="avatar/communities/")
     photo = models.ImageField(null=True, upload_to="photos/communities/")
@@ -43,12 +44,14 @@ class Community(AbstractTimeStamp):
 
     def get_subscriber_count(self):
         count = self.subscriptions.count()
-        count = 12000
         if count >= 1000000:
             return f"{count / 1000000:.2f}".rstrip("0").rstrip(".") + "m"
         elif count >= 1000:
             return f"{count / 1000:.2f}".rstrip("0").rstrip(".") + "k"
         return f"{count}"
+
+    def is_subscribed(self):
+        return self.subscriptions.filter(subscriber=self.creater).exists()
 
     class Meta:
         verbose_name_plural = "communities"

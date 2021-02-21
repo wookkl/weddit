@@ -49,9 +49,9 @@
                 <form class="mb-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
                     {% csrf_token %}
                     <input type="hidden" name="community_pk" value="{{ post_obj.community.pk }}"/>
-                    <button class="w-100 btn{% if post_obj.is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
+                    <button class="w-100 btn{% if post_obj.community.is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
                         <small class="fw-bold">
-                        {% if post_obj.is_subscribed %}Drop{% else %}Join{% endif %}
+                        {% if post_obj.community.is_subscribed %}Drop{% else %}Join{% endif %}
                         </small>
                     </button>
                 </form> 
