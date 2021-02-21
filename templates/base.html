@@ -24,7 +24,7 @@
         
         {% block content %}        
         {% endblock content %}
-
+        
         {% include 'partials/footer.html' %}
     </body>
     <!-- CSS only -->
@@ -41,7 +41,8 @@
             var pk = $(this).attr('id');
             pk = pk.replace('post_pk_','');
             document.location.href = url.replace('1', pk);
-
         });
     </script>
+    {% block javascript %}
+    {% endblock javascript %} 
 </html>
