@@ -16,11 +16,12 @@ class CommunityListView(ListView):
 
     model = Community
     queryset = Community.objects.all()
-    paginate_by = 10
-    paginate_orphans = 5
+    paginate_by = 15
+    paginate_orphans = 3
     template_name = "communities/list.html"
     ordering = ["-id"]
     http_method_names = ["get"]
+    context_object_name = "communities"
 
 
 @method_decorator(login_required, "get")
@@ -61,7 +62,7 @@ class CommunityDetailView(DetailView):
         community = self.get_object()
         posts = Post.objects.filter(community=community).order_by("-created_at")
         page = self.request.GET.get("page", 1)
-        paginator = Paginator(posts, 10)
+        paginator = Paginator(posts, 3)
         try:
             paginated_posts = paginator.page(page)
         except PageNotAnInteger:

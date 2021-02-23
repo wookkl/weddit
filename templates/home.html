@@ -5,8 +5,9 @@
 {% endblock page_title %}
 
 {% block content %}
-<div class="d-flex px-5 justify-content-center gap-3">
+<div class="d-flex px-5 justify-content-center gap-3 mt-5">
   <div class="infinite-container" style="max-width: 600px; width: 40rem;">
+    <small class="d-block mx-auto my-3">Lastest posts</small>
     {% for post in posts %}
       <div class="infinite-item">
         {% include 'mixins/post_card.html' with post=post %}
@@ -20,6 +21,7 @@
     </div>
   </div>
   <div class="w-25">
+    <small class="d-block mx-auto my-3">&nbsp;</small>
     <ul class="list-group w-100">
       <li class="list-group-item">Lastest communities</li>
       {% for community in communities %}

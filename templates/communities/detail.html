@@ -9,7 +9,7 @@
     <div style="background-color: white; height: 6rem;">
         <div class="mx-auto d-flex justify-content-between position-relative" style="width:60%; padding-top: 1rem;">
             {% if community_obj.avatar %}
-                <img class="border border-5 border-white  p-0 rounded-circle" style="width: 5rem; height:5rem;" src="{{ community_obj.avatar.url }}"/>
+                <img class="position-absolute border border-5 border-white  p-0 rounded-circle" style="width: 5rem; height:5rem; top: -1rem;" src="{{ community_obj.avatar.url }}"/>
             {% else %}
                 <div class="position-absolute border border-5 border-white p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 5rem; height:5rem; top: -1rem;"><span style="font-size: 1.5rem;">{{community_obj.name|first}}</span></div>
             {% endif %}
@@ -29,9 +29,9 @@
         </div>
     </div>
     <div class="d-flex justify-content-center gap-3 mt-3">
-        <div style="max-width: 600px; width: 40rem;">
+        <div class="infinite-container" style="max-width: 600px; width: 40rem;">
             {% for post in post_obj %}
-                <div id="post_pk_{{ post.pk }}" class="card mb-3 p-2 card-link mx-auto">
+                <div id="post_pk_{{ post.pk }}" class="card mb-3 p-2 card-link mx-auto infinite-item">
                     <div class="d-flex justify-content-between">
                         <div class="text-muted d-flex gap-2">
                             <small>Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
@@ -43,6 +43,12 @@
                     <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
                 </div>  
             {% endfor %}
+            {% if post_obj.has_next %}
+                <a class="infinite-more-link btn btn-secondary" href="?page={{ post_obj.next_page_number }}">More</a>
+            {% endif %}
+            <div class="spinner-border loading" style="width: 3rem; height: 3rem; display: none;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
         <div class="bg-light rounded-3 border" style="width: 20rem; height: fit-content;">
             <div class="btn-primary rounded-top pl-2 align-middle"  style="width: 30rem; height: 3rem; display: table-cell;">
@@ -63,4 +69,17 @@
         </div>
     </div>
 {% endblock content %}
+{% block javascript %}
+  <script>
+    var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+        $('.loading').show();
+    },  
+    onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+    }
+    });
+  </script>
+{% endblock javascript %}
     
