@@ -6,7 +6,9 @@ from django.conf import settings
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+from posts.models import Post
 from . import forms
 
 MESSAGE_WELCOME = _("Welcome back!")
@@ -78,7 +80,21 @@ def user_detail_view(request, nickname):
     if request.method == "GET":
         try:
             user = get_user_model().objects.get(nickname=nickname)
-            return render(request, "users/detail.html", {"user_obj": user})
+            posts = Post.objects.filter(writer=user).order_by("-id")
+            page = request.GET.get("page", 1)
+            paginator = Paginator(posts, 5)
+            try:
+                paginated_posts = paginator.page(page)
+            except PageNotAnInteger:
+                paginated_posts = paginator.page(1)
+            except EmptyPage:
+                paginated_posts = paginator.page(paginator.num_pages)
+
+            return render(
+                request,
+                "users/detail.html",
+                {"user_obj": user, "post_obj": paginated_posts},
+            )
         except get_user_model().DoesNotExist:
             return redirect("home")
 

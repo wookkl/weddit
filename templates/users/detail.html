@@ -3,20 +3,59 @@
 {% block page_title %}
     {{ user_obj.nickname }} - 
 {% endblock page_title %}
-    
+
 {% block content %}
-    <div class="container d-flex flex-column justify-content-center align-items-center">
-        <div>
-        {% if user.avatar %}
-            <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ user_obj.avatar.url }}"/>
-        {% else %}
-            <div class="img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 150px;height:150px;"><span class="fs-1">{{user_obj.nickname|first}}</span></div>
-        {% endif %}
+    <div class="container d-flex gap-3 mx-auto justify-content-center mt-5">
+        <div class="infinite-container" style="max-width: 600px; width: 40rem;">
+            {% for post in post_obj %}
+              <div class="infinite-item">
+                {% include 'mixins/post_card.html' with post=post %}
+              </div>
+            {% endfor %}
+            {% if post_obj.has_next %}
+              <a class="infinite-more-link btn btn-secondary" style="display: none;" href="?page={{ post_obj.next_page_number }}">More</a>
+            {% endif %}
+            <div class="spinner-border loading" style="width: 3rem; height: 3rem; display: none;" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
-        <span>{{ user_obj.nickname }}</span>
-        <div class="border w-100 my-4"></div>
-        <h3>Posts</h3>
+        
+        <div>
+            <div class="bg-light rounded-3 border" style="width: 20rem; height: fit-content;">
+                <div class="btn-primary rounded-top pl-2 align-middle position-relative"  style="width: 30rem; height: 6rem; display: table-cell;">
+                    <div style="position: absolute; bottom: -1.5rem;">
+                    {% if user.avatar %}
+                        <img class="border border-4 border-white img-thumbnail" style="width: 5rem;height:5rem;" src="{{ user_obj.avatar.url }}"/>
+                    {% else %}
+                        <div class="border border-4 border-white img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 5rem;height:5rem;"><span class="fs-2">{{user_obj.nickname|first}}</span></div>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="p-3 mt-2">
+                    <small>{{ user_obj.nickname }}</small>
+                    <div class="d-flex flex-column my-3">
+                        <big>{{ user_obj.posts.count }}</big>
+                        <small>Posts</small>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
             
 {% endblock content %}
-    
+
+{% block javascript %}
+  <script>
+    var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+        $('.loading').show();
+    },  
+    onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+    }
+    });
+  </script>
+{% endblock javascript %}
+
+

@@ -11,7 +11,7 @@ def home_view(request):
     """Home view"""
     posts = Post.objects.all().order_by("-created_at")
     page = request.GET.get("page", 1)
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(posts, 5)
     try:
         paginated_posts = paginator.page(page)
     except PageNotAnInteger:
