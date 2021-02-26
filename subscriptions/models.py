@@ -16,5 +16,8 @@ class Subscription(AbstractTimeStamp):
         Community, on_delete=models.CASCADE, related_name="subscriptions"
     )
 
+    def __str__(self):
+        return f"{self.subscriber}-{self.community}"
+
     class Meta:
         unique_together = ["subscriber", "community"]

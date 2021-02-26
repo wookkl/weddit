@@ -37,3 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         alphanumeric_validator(self.nickname)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.nickname)

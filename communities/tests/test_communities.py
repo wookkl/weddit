@@ -104,9 +104,10 @@ class PrivateCommunityTest(TestCase):
             "creater": self.user,
             "name": "testname",
             "description": "test description",
+            "avatar": tempfile.NamedTemporaryFile(suffix=".jpg").name,
+            "photo": tempfile.NamedTemporaryFile(suffix=".jpg").name,
         }
         res = self.client.post(CREATE_COMMUNITY_URL, payload)
-        community = Community.objects.get(name=payload["name"])
-
-        self.assertRedirects(res, community.get_absolute_url())
+        Community.objects.get(name=payload["name"])
+        self.assertRedirects(res, "/communities/testname")
         self.assertTrue(Community.objects.filter(name=payload["name"]).exists())

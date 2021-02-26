@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView
@@ -33,9 +34,6 @@ class CommunityCreateView(CreateView, SuccessMessageMixin):
     form_class = CommunityForm
     template_name = "communities/create.html"
     success_message = _("Community created successfully")
-
-    def get_success_url(self):
-        return reverse("communities:detail", kwargs={"slug": self.object.slug})
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

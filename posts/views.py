@@ -7,8 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 
-from communities.models import Community
-
 from .models import Post
 from .forms import PostForm
 from .decorators import post_ownership_required
@@ -36,14 +34,10 @@ class PostCreateView(CreateView, SuccessMessageMixin):
     template_name = "posts/create.html"
     success_message = _("Post created successfully")
 
-    def form_valid(self, form):
-        form.instance.writer = self.request.user
-        community_pk = self.kwargs["community_pk", None]
-        try:
-            form.instance.community = Community.objects.get(pk=community_pk)
-        except Community.DoesNotExist:
-            return HttpResponseBadRequest()
-        return super().form_valid(form)
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(user=self.request.user, **self.get_form_kwargs())
 
     def form_invalid(self, form):
         errors = []

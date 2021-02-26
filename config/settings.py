@@ -32,21 +32,30 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+PROJECT_APPS = [
     "core",
     "users",
+    "comments",
     "communities",
     "posts",
     "subscriptions",
+]
+
+THRID_PARTY_APPS = [
     "bootstrap4",
     "django_seed",
 ]
+
+INSTALLED_APPS = DJANGO_APPS + THRID_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

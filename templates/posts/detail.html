@@ -22,7 +22,9 @@
                 <div class="card-body">
                     <p class="card-text">{{ post_obj.content }}</p>
                 </div>
-                <img class="mx-auto" src="{{ post_obj.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
+                {% if post_obj.photo %}
+                    <img class="mx-auto" src="{{ post_obj.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
+                {% endif %}
             </div>  
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
