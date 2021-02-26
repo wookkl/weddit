@@ -26,7 +26,7 @@ class PostListView(ListView):
 
 @method_decorator(login_required, "get")
 @method_decorator(login_required, "post")
-class PostCreateView(CreateView, SuccessMessageMixin):
+class PostCreateView(SuccessMessageMixin, CreateView):
     """Post create view definition"""
 
     model = Post
@@ -69,4 +69,4 @@ def post_delete_confirm_view(request, pk):
         post.delete()
     except Post.DoesNotExist:
         return HttpResponseBadRequest()
-    return redirect(reverse("posts:list"))
+    return redirect(reverse("home"))

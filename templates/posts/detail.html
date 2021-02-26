@@ -18,6 +18,9 @@
                         <small><a class="link-secondary" href="{% url 'communities:detail' post_obj.community.slug %}">{{ post_obj.community.name }}</a></small>
                         <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post_obj.writer.nickname %}">{{ post_obj.writer.nickname }}</a> {{ post_obj.get_created_time }}</small>
                     </div>
+                    {% if request.user == post_obj.writer %}
+                        <a href="{% url 'posts:delete-confirm' pk=post_obj.pk %}" class="btn btn-danger rounded-pill align-baseline confirm-delete"><small class="fw-bold">Delete</small></a>
+                    {% endif %}
                 </div>    
                 <div class="card-body">
                     <p class="card-text">{{ post_obj.content }}</p>
@@ -53,7 +56,7 @@
                     <input type="hidden" name="community_pk" value="{{ post_obj.community.pk }}"/>
                     <button class="w-100 btn{% if post_obj.community.is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
                         <small class="fw-bold">
-                        {% if post_obj.community.is_subscribed %}Drop{% else %}Join{% endif %}
+                            {% if post_obj.community.is_subscribed %}Drop{% else %}Join{% endif %}
                         </small>
                     </button>
                 </form> 
@@ -61,4 +64,13 @@
         </div>
     </div>
 {% endblock content %}
+
+
+{% block javascript %}
+    <script>
+        $(document).on('click', '.confirm-delete', function(){
+            return confirm('Are you sure you want to delete this?');
+            })
+    </script>
+{% endblock javascript %}
     
