@@ -6,9 +6,11 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
+from django.views.generic.edit import FormMixin
 
 from .models import Post
 from .forms import PostForm
+from comments.forms import CommentForm
 from .decorators import post_ownership_required
 
 
@@ -47,12 +49,14 @@ class PostCreateView(SuccessMessageMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
-class PostDetailView(DetailView):
+class PostDetailView(FormMixin, DetailView):
     """Post detail view definition"""
 
     model = Post
     template_name = "posts/detail.html"
     context_object_name = "post_obj"
+
+    form_class = CommentForm
 
 
 @login_required

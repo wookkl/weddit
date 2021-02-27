@@ -3,8 +3,8 @@ import tempfile
 from django.contrib.auth import get_user_model
 
 from communities.models import Community
-
 from posts.models import Post
+from subscriptions.models import Subscription
 
 
 def get_sample_user(**params):
@@ -43,3 +43,12 @@ def get_sample_post(writer=None, community=None, **params):
     }
     defaults.update(params)
     return Post.objects.create(**defaults)
+
+
+def create_subscription(subscriber=None, community=None, **params):
+    defaults = {
+        "subscriber": subscriber,
+        "community": community,
+    }
+    defaults.update(params)
+    return Subscription.objects.create(**defaults)

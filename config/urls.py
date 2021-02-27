@@ -26,6 +26,7 @@ urlpatterns = [
     path("communities/", include("communities.urls", namespace="communities")),
     path("posts/", include("posts.urls", namespace="posts")),
     path("subscriptions/", include("subscriptions.urls", namespace="subscriptions")),
+    path("comments/", include("comments.urls", namespace="comments")),
 ]
 
 if settings.DEBUG:

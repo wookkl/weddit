@@ -1,0 +1,18 @@
+{% load bootstrap4 %}
+
+
+{% block content %}
+<div>
+    {% if user.is_authenticated %}
+        <form action="{% url 'comments:create' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form show_label=False %}
+            <input type="hidden" name="post_pk" value="{{ post.pk }}">
+            <input type="submit" class="btn btn-dark rounded-pill col-5 mt-3" value="CREATE" />
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-dark rounded-pill col-5 mt-3">LOG IN</a>
+    {% endif %}
+</div>
+{% endblock content %}
+    

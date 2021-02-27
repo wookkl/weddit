@@ -6,6 +6,14 @@ from communities.models import Community
 from posts.models import Post
 
 
+def get_form_errors(form):
+    errors = []
+    for key in form.errors.as_data().keys():
+        for error in form.errors.as_data()[key]:
+            errors.append(error.message)
+    return errors
+
+
 @require_http_methods(["GET"])
 def home_view(request):
     """Home view"""

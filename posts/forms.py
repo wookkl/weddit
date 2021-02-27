@@ -2,7 +2,6 @@ from django import forms
 
 from .models import Post
 from communities.models import Community
-from django.db.models.query import QuerySet
 
 
 class PostForm(forms.ModelForm):

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 
 {% block page_title %}
     {{ post_obj.content|truncatewords:5}} - 
@@ -28,6 +29,7 @@
                 {% if post_obj.photo %}
                     <img class="mx-auto" src="{{ post_obj.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
                 {% endif %}
+                {% include 'comments/create.html' with post=post_obj %}
             </div>  
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">

@@ -8,6 +8,7 @@ from core.tests.sample_objects import (
     get_sample_user,
     get_sample_community,
     get_sample_post,
+    create_subscription,
 )
 
 from posts.models import Post
@@ -70,6 +71,7 @@ class PrivatePostTests(TestCase):
         self.client = Client()
         self.client.force_login(self.user)
         self.community = get_sample_community()
+        create_subscription(subscriber=self.user, community=self.community)
 
     def test_retrieve_posts(self):
         """Test retrieving a list of posts"""
@@ -87,7 +89,7 @@ class PrivatePostTests(TestCase):
         payload = {
             "content": "sample content",
             "photo": tempfile.NamedTemporaryFile(suffix=".jpg").name,
-            "community_pk": self.community.pk,
+            "community": self.community.pk,
         }
         res = self.client.post(CREATE_POST_URL, payload)
         post = Post.objects.get(content=payload["content"])
