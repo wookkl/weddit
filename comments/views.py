@@ -1,14 +1,16 @@
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
+from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from .forms import CommentForm
 from .models import Comment
+from .decorators import comment_ownership_required
 from posts.models import Post
-from core.views import get_form_errors
 
 
 @method_decorator(login_required, "get")
@@ -29,3 +31,21 @@ class CreateCommentView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy("posts:detail", kwargs={"pk": self.object.post.pk})
+
+
+class CommentDetailView(DetailView):
+    """ Comment detail view definition"""
+
+    model = Comment
+    template_name = "comments/detail.html"
+
+
+@login_required
+@comment_ownership_required
+def comment_delete_view(request, pk):
+    try:
+        comment = Comment.objects.get(pk=pk)
+        comment.delete()
+    except comment.DoesNotExist:
+        return HttpResponseBadRequest()
+    return redirect(request.path)

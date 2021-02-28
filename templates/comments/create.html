@@ -8,11 +8,20 @@
             {% csrf_token %}
             {% bootstrap_form form show_label=False %}
             <input type="hidden" name="post_pk" value="{{ post.pk }}">
-            <input type="submit" class="btn btn-dark rounded-pill col-5 mt-3" value="CREATE" />
+            <div class="d-flex justify-content-end">
+                <input type="submit" class="btn btn-secondary rounded-pill text-sm py-1 px-3" style="font-size: 0.8rem;" value="Comment" />
+            </div>
         </form>
     {% else %}
-        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-dark rounded-pill col-5 mt-3">LOG IN</a>
+        <div class="border border-2 rounded-3 border-light d-flex justify-content-between p-2 align-items-center">
+            <span style="color: grey;">Log in or sign up to leave a comment</span>
+            <div class="d-flex">
+                <a class="nav-link btn btn-outline-primary text-primary rounded-pill px-4 me-3 py-1" href="{% url 'login' %}?next={{ request.path }}">Log In</a>
+                <a class="nav-link btn btn-primary rounded-pill px-4 py-1 text-white" href="{% url 'sign-up' %}?next={{ request.path }}">Sign Up</a>
+            </div>
+        </div>
     {% endif %}
+    <div class="border border-1 border-light mt-3 mb-5""></div>
 </div>
 {% endblock content %}
     

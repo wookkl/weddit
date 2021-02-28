@@ -1,0 +1,25 @@
+{% load bootstrap4 %}
+
+{% block content %}
+<div class="d-flex justify-content-start gap-2 mb-4">
+    <div class="d-flex flex-column justify-content-start gap-1 align-items-center">
+        {% if comment.writer.avatar %}
+            <img class="rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ comment.writer.avatar.url }}"/>
+        {% else %}
+            <div class=" bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center m-0 mb-1 pb-1" style="width: 1.8rem;height:1.8rem;">{{ comment.writer.nickname|first }}</div>
+        {% endif %}
+        <div class="h-100"style="background-color: lightgrey; width: 1px;" ></div>
+    </div>
+    <div>
+        <div class="fw-light text-muted" style="font-size: 0.8rem;">
+            <a class="link-secondary" href="{% url 'user:detail' comment.writer.nickname %}">{{ comment.writer.nickname }}</a>
+            <span>
+            {{ comment.get_created_time }}
+            </span>
+            <a href="{% url 'comments:delete' pk=comment.pk %}&next={{ request.path }}" class="link-secondary ml-1 confirm-delete" style="cursor: pointer; text-decoration: none;"><i class="far fa-trash-alt mx-1"></i>Delete</a>
+        </div>
+        <p class="fw-light">{{ comment.comment }}</p>
+    </div>
+</div>
+{% endblock content %}
+    

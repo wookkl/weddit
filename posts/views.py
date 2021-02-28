@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 from django.views.generic import CreateView, ListView, DetailView
 from django.utils.decorators import method_decorator
@@ -62,15 +62,12 @@ class PostDetailView(FormMixin, DetailView):
 @login_required
 @post_ownership_required
 def post_delete_view(request, pk):
-    return render(request, "posts/delete.html", {"pk": pk}, status=200)
-
-
-@login_required
-@post_ownership_required
-def post_delete_confirm_view(request, pk):
+    nxt = request.GET.get("next", None)
     try:
         post = Post.objects.get(pk=pk)
         post.delete()
     except Post.DoesNotExist:
         return HttpResponseBadRequest()
+    if nxt:
+        return redirect(nxt)
     return redirect(reverse("home"))
