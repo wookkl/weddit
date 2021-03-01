@@ -26,7 +26,6 @@ class Command(BaseCommand):
         number_of_communities = Community.objects.count()
         for _ in range(number):
             meme = requests.get("https://meme-api.herokuapp.com/gimme").json()
-            print(meme)
             title = meme.get("title")
             url = meme.get("url")
             postlink = meme.get("postLink")

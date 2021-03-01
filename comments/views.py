@@ -1,6 +1,5 @@
 from django.urls import reverse_lazy
-from django.utils.translation import gettext as _
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator

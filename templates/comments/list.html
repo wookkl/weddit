@@ -1,0 +1,6 @@
+{% block content %}
+    {% for comment in target_comments %}
+        {% include 'comments/detail.html' with pk=comment.pk %}
+    {% endfor %}    
+{% endblock content %}
+    

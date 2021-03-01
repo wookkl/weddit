@@ -7,11 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.views.generic.edit import FormMixin
+from django.views.generic.list import MultipleObjectMixin
 
 from .models import Post
 from .forms import PostForm
-from comments.forms import CommentForm
 from .decorators import post_ownership_required
+from comments.forms import CommentForm
+from comments.models import Comment
 
 
 class PostListView(ListView):
@@ -49,14 +51,31 @@ class PostCreateView(SuccessMessageMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
-class PostDetailView(FormMixin, DetailView):
+class PostDetailView(MultipleObjectMixin, FormMixin, DetailView):
     """Post detail view definition"""
 
     model = Post
     template_name = "posts/detail.html"
-    context_object_name = "post_obj"
-
     form_class = CommentForm
+    paginate_by = 10
+    paginate_orphans = 5
+
+    def get_context_data(self, **kwargs):
+        object_list = Comment.objects.filter(post=self.get_object()).order_by(
+            "created_at"
+        )
+        context = super(PostDetailView, self).get_context_data(
+            object_list=object_list, **kwargs
+        )
+        return context
+
+    def get_context_object_name(self, obj):
+        """Get the name to use for the object."""
+        obj_name = super().get_context_object_name(obj)
+        if not obj_name:
+            return "post_obj"
+        else:
+            return "target_comments"
 
 
 @login_required

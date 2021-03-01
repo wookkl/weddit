@@ -36,9 +36,7 @@
             </div>
             <div class="card mb-1 py-2 mx-auto px-3">
                 {% include 'comments/create.html' with post=post_obj %}
-                {% for comment in post_obj.comments.all %}
-                    {% include 'comments/detail.html' with pk=comment.pk %}
-                {% endfor %}
+                {% include 'comments/list.html' with post_pk=post_obj.pk %}
             </div>
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
