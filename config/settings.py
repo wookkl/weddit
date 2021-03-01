@@ -53,6 +53,8 @@ PROJECT_APPS = [
 THRID_PARTY_APPS = [
     "bootstrap4",
     "django_seed",
+    "ckeditor",
+    "ckeditor_uploader",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THRID_PARTY_APPS + PROJECT_APPS
@@ -155,3 +157,16 @@ LOGIN_URL = reverse_lazy("login")
 LOGIN_REDIRECT_URL = reverse_lazy("home")
 
 LOGOUT_REDIRECT_URL = reverse_lazy("home")
+
+# CKEDIRTOR SETTINGS
+
+CKEDITOR_UPLOAD_PATH = "ckeditor/"
+
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    "default": {
+        "width": "100%",
+        "removePlugins": "flash",
+    }
+}

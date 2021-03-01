@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import ValidationError
 
+from ckeditor_uploader.fields import RichTextUploadingField
+
 from core.models import AbstractTimeStamp
 
 
@@ -13,7 +15,7 @@ class Comment(AbstractTimeStamp):
     writer = models.ForeignKey(
         "users.User", related_name="comments", on_delete=models.CASCADE
     )
-    comment = models.TextField(blank=False)
+    comment = RichTextUploadingField()
 
     def save(self, *args, **kwargs):
         if not self.comment:

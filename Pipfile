@@ -13,6 +13,7 @@ pillow = "*"
 django-bootstrap4 = "*"
 requests = "*"
 django-seed = "*"
+django-ckeditor = "*"
 
 [requires]
 python_version = "3.8"
