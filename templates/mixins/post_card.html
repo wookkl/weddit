@@ -1,30 +1,43 @@
-<div id="post_pk_{{ post.pk }}" class="card mb-3 p-2 card-link mx-auto">
-    <div class="d-flex justify-content-between">
-        <div class="text-muted d-flex gap-2">
-            {% if post.community.avatar %}
-                <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
-            {% else %}
-                <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span style="font-size: 1rem;">{{ post.community.name|first }}</span></div>
-            {% endif %}
-            <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
-            <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
-        </div>
-        <div>   
-            <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
-                {% csrf_token %}
-                <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
-                {% if not post.community.is_subscribed %}
-                    <button class="btn btn-primary rounded-pill px-2 py-0 align-baseline" type="submit">
-                        <small><i class="fas fa-plus mx-1"></i>Join</small>
-                    </button>
-                {% endif %}
-            </form>
-        </div>
-    </div>    
-    <div class="card-body">
-        <p class="card-text">{{ post.content }}</p>
+<div id="post_pk_{{ post.pk }}" class="card mb-3 d-flex flex-row card-link">
+    <div class="bg-light rounded-start" style="width: 3rem;">
     </div>
-    {% if post.photo %}
-        <img class="mx-auto" src="{{ post.photo.url }}" style="max-width: 400px;" alt="post_photo"/>
-    {% endif %}
-</div>  
+    <div class="p-2 w-100">
+        <div class="d-flex justify-content-between gap-1">
+            <div class="text-muted d-flex gap-2">
+                {% if post.community.avatar %}
+                    <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
+                {% else %}
+                    <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span style="font-size: 1rem;">{{ post.community.name|first }}</span></div>
+                {% endif %}
+                <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
+                <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+            </div>
+            <div>   
+                <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
+                    {% if not post.community.is_subscribed %}
+                        <button class="btn btn-primary rounded-pill px-2 py-0 align-baseline" type="submit">
+                            <small><i class="fas fa-plus mx-1"></i>Join</small>
+                        </button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>    
+        <div class="card-body">
+            <p class="card-text">{{ post.content }}</p>
+            {% if post.photo %}
+                <img src="{{ post.photo.url }}" style="max-width: 400px; margin: auto; display: block;" alt="post_photo"/>
+            {% endif %}
+        </div>
+        <div class="d-flex gap-3 text-muted " style="font-size: 0.8rem;">
+            <div class="d-flex gap-1 align-items-center">
+                <i class="fas fa-comment-alt"></i><span>{{ post.get_comment_count }} Comments</span>
+            </div>
+            <div id="post_copy_{{ post.pk }}" class="d-flex gap-1 align-items-center copy-link" style="cursor: pointer;">
+                <i class="fas fa-link"></i><span>Copy Link</span>
+            </div>
+            <input type='text' id='copyUrlInput{{ post.pk }}' style='position:absolute; left:-9999px'>
+        </div>
+    </div>
+</div>

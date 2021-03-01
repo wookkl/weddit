@@ -43,12 +43,7 @@ class Community(AbstractTimeStamp):
         return self.avatar.url
 
     def get_subscriber_count(self):
-        count = self.subscriptions.count()
-        if count >= 1000000:
-            return f"{count / 1000000:.2f}".rstrip("0").rstrip(".") + "m"
-        elif count >= 1000:
-            return f"{count / 1000:.2f}".rstrip("0").rstrip(".") + "k"
-        return f"{count}"
+        return self._get_count(self.subscriptions.count())
 
     def is_subscribed(self):
         return self.subscriptions.filter(subscriber=self.creater).exists()

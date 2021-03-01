@@ -24,5 +24,8 @@ class Post(AbstractTimeStamp):
     def get_photo_url(self):
         return self.photo.url
 
+    def get_comment_count(self):
+        return self._get_count(self.comments.count())
+
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"pk": self.pk})

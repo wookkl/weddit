@@ -27,5 +27,12 @@ class AbstractTimeStamp(models.Model):
             return f"{hours} hours ago"
         return f"{days} days ago"
 
+    def _get_count(self, count):
+        if count >= 1000000:
+            return f"{count / 1000000:.2f}".rstrip("0").rstrip(".") + "m"
+        elif count >= 1000:
+            return f"{count / 1000:.2f}".rstrip("0").rstrip(".") + "k"
+        return f"{count}"
+
     class Meta:
         abstract = True
