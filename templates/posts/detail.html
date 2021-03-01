@@ -20,7 +20,10 @@
                         <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post_obj.writer.nickname %}">{{ post_obj.writer.nickname }}</a> {{ post_obj.get_created_time }}</small>
                     </div>
                     {% if request.user == post_obj.writer %}
-                        <a href="{% url 'posts:delete' pk=post_obj.pk %}" class="btn btn-danger rounded-pill align-baseline confirm-delete"><small class="fw-bold">Delete</small></a>
+                        <form class="delete" action="{% url 'posts:delete' pk=post_obj.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger rounded-pill" type="submit"><small class="fw-bold">Delete</small></button>
+                        </form>
                     {% endif %}
                 </div>    
                 <div class="card-body">
@@ -33,11 +36,9 @@
             </div>
             <div class="card mb-1 py-2 mx-auto px-3">
                 {% include 'comments/create.html' with post=post_obj %}
-                
                 {% for comment in post_obj.comments.all %}
                     {% include 'comments/detail.html' with pk=comment.pk %}
                 {% endfor %}
-                    
             </div>
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
@@ -78,7 +79,7 @@
 
 {% block javascript %}
     <script>
-        $(document).on('click', '.confirm-delete', function(){
+        $(document).on('click', '.delete', function(){
             return confirm('Are you sure you want to delete this?');
             })
     </script>

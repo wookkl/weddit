@@ -62,12 +62,12 @@ class PostDetailView(FormMixin, DetailView):
 @login_required
 @post_ownership_required
 def post_delete_view(request, pk):
-    nxt = request.GET.get("next", None)
-    try:
-        post = Post.objects.get(pk=pk)
-        post.delete()
-    except Post.DoesNotExist:
+    if request.method == "POST":
+        try:
+            post = Post.objects.get(pk=pk)
+            post.delete()
+        except Post.DoesNotExist:
+            return HttpResponseBadRequest()
+        return redirect(reverse("home"))
+    else:
         return HttpResponseBadRequest()
-    if nxt:
-        return redirect(nxt)
-    return redirect(reverse("home"))

@@ -6,10 +6,10 @@ from .models import Comment
 def comment_ownership_required(func):
     """Comment ownership requirement decorator definition"""
 
-    def decorated(request, *args, **kwargs):
-        comment = Comment.objects.get(pk=kwargs["pk"])
+    def decorated(request, pk):
+        comment = Comment.objects.get(pk=pk)
         if comment.writer != request.user:
             return HttpResponseBadRequest
-        return func(request, *args, **kwargs)
+        return func(request, pk)
 
     return decorated

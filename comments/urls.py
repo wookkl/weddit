@@ -6,5 +6,5 @@ app_name = "comments"
 
 urlpatterns = [
     path("create/", CreateCommentView.as_view(), name="create"),
-    path("delete/<int:pk>", comment_delete_view, name="delete"),
+    path("delete/<int:pk>/", comment_delete_view, name="delete"),
 ]

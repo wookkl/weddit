@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
@@ -43,9 +42,14 @@ class CommentDetailView(DetailView):
 @login_required
 @comment_ownership_required
 def comment_delete_view(request, pk):
-    try:
-        comment = Comment.objects.get(pk=pk)
-        comment.delete()
-    except comment.DoesNotExist:
-        return HttpResponseBadRequest()
-    return redirect(request.path)
+    nxt = request.GET.get("next", None)
+    print(nxt)
+    if request.method == "POST":
+        try:
+            comment = Comment.objects.get(pk=pk)
+            comment.delete()
+            if nxt:
+                return redirect(nxt)
+        except comment.DoesNotExist:
+            return HttpResponseBadRequest()
+    return HttpResponseBadRequest()
