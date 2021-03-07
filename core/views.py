@@ -17,6 +17,7 @@ def get_form_errors(form):
 @require_http_methods(["GET"])
 def home_view(request):
     """Home view"""
+
     posts = Post.objects.all().order_by("-created_at")
     page = request.GET.get("page", 1)
     paginator = Paginator(posts, 5)
@@ -26,7 +27,6 @@ def home_view(request):
         paginated_posts = paginator.page(1)
     except EmptyPage:
         paginated_posts = paginator.page(paginator.num_pages)
-
     community_obj = Community.objects.all().order_by("-pk")[:5]
 
     return render(
@@ -34,3 +34,7 @@ def home_view(request):
         "home.html",
         {"communities": community_obj, "posts": paginated_posts},
     )
+
+
+# @require_http_methods(["GET"])
+# def search_view()

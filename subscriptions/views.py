@@ -1,8 +1,5 @@
-from django.views import View
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.http import Http404
-from django.urls import reverse
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
 
 from .models import Subscription
@@ -18,7 +15,7 @@ def subscription_toggle_view(request):
         try:
             community = Community.objects.get(pk=community_pk)
         except Community.DoesNotExist:
-            return redirect(Http404())
+            return Http404()
         try:
             subscription = Subscription.objects.get(
                 subscriber=request.user, community=community
@@ -30,3 +27,4 @@ def subscription_toggle_view(request):
             return redirect(next_url)
         else:
             return redirect(community.get_absolute_url())
+    return HttpResponseBadRequest()

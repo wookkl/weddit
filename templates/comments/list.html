@@ -1,5 +1,5 @@
 {% block content %}
-    {% for comment in target_comments %}
+    {% for comment in post.comments.all %}
         {% include 'comments/detail.html' with pk=comment.pk %}
     {% endfor %}    
 {% endblock content %}

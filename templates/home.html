@@ -8,17 +8,7 @@
 <div class="d-flex px-5 justify-content-center gap-3 mt-5">
   <div class="infinite-container" style="max-width: 600px; width: 40rem;">
     <small class="d-block mx-auto my-3">Lastest posts</small>
-    {% for post in posts %}
-      <div class="infinite-item">
-        {% include 'mixins/post_card.html' with post=post %}
-      </div>
-    {% endfor %}
-    {% if posts.has_next %}
-      <a class="infinite-more-link btn btn-secondary" style="display: none;" href="?page={{ posts.next_page_number }}">More</a>
-    {% endif %}
-    <div class="spinner-border loading" style="width: 3rem; height: 3rem; display: none;" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
+    {% include 'posts/list.html' %}
   </div>
   <div class="w-25">
     <small class="d-block mx-auto my-3">&nbsp;</small>

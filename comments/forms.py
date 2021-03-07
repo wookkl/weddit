@@ -1,7 +1,4 @@
 from django import forms
-from django.utils.translation import gettext as _
-
-from ckeditor_uploader.fields import RichTextUploadingFormField
 
 from .models import Comment
 

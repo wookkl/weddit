@@ -30,9 +30,4 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-
-        fields = [
-            "community",
-            "content",
-            "photo",
-        ]
+        fields = ["community", "content", "photo"]

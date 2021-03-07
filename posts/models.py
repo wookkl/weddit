@@ -12,12 +12,8 @@ from core.models import AbstractTimeStamp
 class Post(AbstractTimeStamp):
     """Post model definition"""
 
-    writer = models.ForeignKey(
-        get_user_model(), related_name="posts", on_delete=models.CASCADE
-    )
-    community = models.ForeignKey(
-        Community, related_name="posts", on_delete=models.CASCADE
-    )
+    writer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     photo = models.ImageField(null=True, upload_to="photos/posts/")
 
@@ -29,3 +25,6 @@ class Post(AbstractTimeStamp):
 
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"pk": self.pk})
+
+    class Meta:
+        default_related_name = "posts"
