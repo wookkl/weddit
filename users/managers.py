@@ -2,8 +2,6 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
 
-from core.managers import CustomModelManager
-
 
 class CustomUserManager(BaseUserManager):
     """Customized user manager"""

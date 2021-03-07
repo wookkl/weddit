@@ -1,8 +1,9 @@
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
 from django.conf import settings
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -18,7 +19,6 @@ MESSAGE_UPDATED = _("Updated successfully")
 USER_SETTINGS_URL = reverse_lazy("settings")
 
 
-# VIEWS
 def signup_view(request):
     """Create user view"""
 
@@ -83,7 +83,6 @@ def user_detail_view(request, nickname):
                 paginated_posts = paginator.page(1)
             except EmptyPage:
                 paginated_posts = paginator.page(paginator.num_pages)
-
             return render(
                 request,
                 "users/detail.html",
@@ -91,6 +90,7 @@ def user_detail_view(request, nickname):
             )
         except get_user_model().DoesNotExist:
             return redirect("home")
+    return HttpResponseBadRequest()
 
 
 @login_required
@@ -175,6 +175,7 @@ def user_delete_view(request):
             messages.success(request, _("Account successfully deleted"))
             return redirect(settings.LOGOUT_REDIRECT_URL)
         errors = get_form_errors(form)
+
     elif request.method == "GET":
         form = forms.DeleteAccountForm(user=request.user)
     return render(
