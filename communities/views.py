@@ -1,9 +1,9 @@
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic.list import MultipleObjectMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from posts.models import Post
 from .models import Community
@@ -46,24 +46,18 @@ class CommunityCreateView(CreateView, SuccessMessageMixin):
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
-class CommunityDetailView(DetailView):
+class CommunityDetailView(DetailView, MultipleObjectMixin):
     """Community detail view definition"""
 
     model = Community
     template_name = "communities/detail.html"
-    context_object_name = "community_obj"
+    paginate_by = 3
+    paginate_orphans = 1
+    ordering = ["-created_at"]
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        community = self.get_object()
-        posts = Post.objects.filter(community=community).order_by("-created_at")
-        page = self.request.GET.get("page", 1)
-        paginator = Paginator(posts, 3)
-        try:
-            paginated_posts = paginator.page(page)
-        except PageNotAnInteger:
-            paginated_posts = paginator.page(1)
-        except EmptyPage:
-            paginated_posts = paginator.page(paginator.num_pages)
-        context["post_obj"] = paginated_posts
+        object_list = Post.objects.filter(community=self.get_object())
+        context = super(CommunityDetailView, self).get_context_data(
+            object_list=object_list, **kwargs
+        )
         return context

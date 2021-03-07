@@ -9,7 +9,7 @@ def comment_ownership_required(func):
     def decorated(request, pk):
         comment = Comment.objects.get(pk=pk)
         if comment.writer != request.user:
-            return HttpResponseBadRequest
+            return HttpResponseBadRequest()
         return func(request, pk)
 
     return decorated
