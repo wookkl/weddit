@@ -17,4 +17,5 @@ urlpatterns = [
     path("signup/", user_views.signup_view, name="sign-up"),
     path("login/", user_views.login_view, name="login"),
     path("logout/", user_views.logout_view, name="logout"),
+    path("search/", views.search_view, name="search"),
 ] + settings_router

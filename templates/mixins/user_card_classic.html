@@ -1,0 +1,12 @@
+<div class="d-flex justify-content-between" >
+    <div class="d-flex gap-2 align-items-center">
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="avatar" width="2rem" height="2rem"/>
+        {% else %}
+            <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 2rem; height: 2rem;"><span>{{ user.nickname|first }}</span></div>
+        {% endif %}
+        <div class="d-flex flex-column">
+            <span>{{ user.nickname }}</span>
+        </div>
+    </div>
+</div>
