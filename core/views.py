@@ -9,6 +9,29 @@ from communities.models import Community
 from posts.models import Post
 
 
+def get_filtered_objects(query, model, page=None):
+    if model == get_user_model():
+        objs = model.objects.filter(Q(nickname__icontains=query))
+    elif model == Community:
+        objs = model.objects.filter(
+            Q(name__icontains=query)
+            | Q(title__icontains=query)
+            | Q(description__icontains=query)
+        )
+    elif model == Post:
+        objs = model.objects.filter(Q(content__icontains=query))
+    if page:
+        paginator = Paginator(objs, 10)
+        try:
+            paginated_objs = paginator.page(page)
+        except PageNotAnInteger:
+            paginated_objs = paginator.page(1)
+        except EmptyPage:
+            paginated_objs = paginator.page(paginator.num_pages)
+        return paginated_objs
+    return objs
+
+
 def get_form_errors(form):
     errors = []
     for key in form.errors.as_data().keys():
@@ -31,7 +54,7 @@ def home_view(request):
     except EmptyPage:
         paginated_posts = paginator.page(paginator.num_pages)
     community_obj = Community.objects.all().order_by("-pk")[:5]
-
+    print(paginated_posts)
     return render(
         request,
         "home.html",
@@ -42,43 +65,28 @@ def home_view(request):
 @require_http_methods(["GET"])
 def search_view(request):
     """Search view"""
-    users = None
-    communities = None
-    posts = None
+    contexts = {}
+
     if request.method == "GET":
+        page = request.GET.get("page", 1)
         typee = request.GET.get("type", None)
-        query = request.GET.get("q", None)
+        query = request.GET.get("q", "")
         if typee is None:
-            users = get_user_model().objects.filter(Q(nickname__icontains=query))[:3]
-            communities = sorted(
-                Community.objects.filter(
-                    Q(name__icontains=query)
-                    | Q(title__icontains=query)
-                    | Q(description__icontains=query)
-                ),
-                key=lambda x: x.get_subscriber_count(),
-                reverse=True,
-            )[:3]
-            posts = Post.objects.filter(Q(content__icontains=query))
+            contexts["users"] = get_filtered_objects(query, get_user_model())[:3]
+            contexts["communities"] = get_filtered_objects(query, Community)[:3]
+            contexts["posts"] = get_filtered_objects(query, Post)[:3]
         elif typee == "comm":
-            communities = Community.objects.filter(
-                Q(name__icontains=query)
-                | Q(title__icontains=query)
-                | Q(description__icontains=query)
-            )
+            contexts["communities"] = get_filtered_objects(query, Community, page=page)
         elif typee == "user":
-            users = get_user_model().objects.filter(Q(nickname__icontains=query))
+            contexts["users"] = get_filtered_objects(query, get_user_model(), page=page)
         elif typee == "post":
-            posts = Post.objects.filter(Q(content__icontains=query))
+            contexts["posts"] = get_filtered_objects(query, Post, page=page)
+        contexts["type"] = typee
+        contexts["query"] = query
         return render(
             request,
             "core/search.html",
-            {
-                "users": users,
-                "communities": communities,
-                "posts": posts,
-                "query": query,
-            },
+            contexts,
             status=200,
         )
     else:

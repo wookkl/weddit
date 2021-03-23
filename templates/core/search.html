@@ -6,48 +6,42 @@
     <small class="fw-light text-muted">Search results</small>
     <ul class="nav nav-tabs m-0 p-0 ">
         <li class="nav-item">
-            <a class="nav-link active border-bottom" aria-current="page" href="#">Best results</a>
+            <a class="nav-link border-bottom {% if type == None %}active{% endif %}" href="{% url 'search' %}?q={{ query }}">Best results</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link border-bottom" href="#">Posts</a>
+            <a class="nav-link border-bottom {% if type == 'post' %}active{% endif %}" href="{% url 'search' %}?q={{ query }}&type=post">Posts</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link border-bottom" href="#">Communities</a>
+            <a class="nav-link border-bottom {% if type == 'comm' %}active{% endif %}" href="{% url 'search' %}?q={{ query }}&type=comm">Communities</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link border-bottom" href="#">Users</a>
+            <a class="nav-link border-bottom {% if type == 'user' %}active{% endif %}" href="{% url 'search' %}?q={{ query }}&type=user">Users</a>
         </li>
-      </ul>
+      </ul> 
 </div>
 <div class="d-flex gap-4 p-4">
     <div style="width: 82rem;">
-        <div class="bg-white p-3 d-flex flex-column align-items-start">
+        <div class="bg-white p-3 d-flex flex-column ">
+            {% if posts %}
+                {% include 'posts/list_classic.html' with posts=posts %}
+                {% if type == None %}
+                    <a href="{% url 'search' %}?q={{ query }}&type=post" class="btn btn-link m-0 p-0" style="text-decoration: none; font-size: small; font-weight: 600;">VIEW MORE</a>
+                {% endif %}
+            {% endif %}
             {% if communities %}
-                <span class="text-muted" style="font-size: 0.3rem;">COMMUNITIES</span>
-                <div class="w-100 my-1" style="background-color: lightgrey; height: 1px;"></div>
                 {% include 'communities/list_classic.html' with communities=communities %}
-                <a class="btn btn-link m-0 p-0" style="text-decoration: none; font-size: small; font-weight: 600;">VIEW MORE</a>
+                {% if type == None %}
+                    <a href="{% url 'search' %}?q={{ query }}&type=comm" class="btn btn-link m-0 p-0" style="text-decoration: none; font-size: small; font-weight: 600;">VIEW MORE</a>
+                {% endif %}
             {% endif %}
             {% if users %}
-                <span class="text-muted mt-3" style="font-size: 0.3rem;">USERS</span>
-                <div class="w-100 my-1" style="background-color: lightgrey; height: 1px;"></div>
                 {% include 'users/list_classic.html' with users=users %}
-                <a class="btn btn-link m-0 p-0" style="text-decoration: none; font-size: small; font-weight: 600;">VIEW MORE</a>
+                {% if type == None %}
+                    <a href="{% url 'search' %}?q={{ query }}&type=user" class="btn btn-link m-0 p-0" style="text-decoration: none; font-size: small; font-weight: 600;">VIEW MORE</a>
+                {% endif %}
             {% endif %}
-        </div>
-        <div>
         </div>
     </div>
     {% include 'partials/about.html' %}
 </div>
 {% endblock content %}
-
-{% block javascript %}
-    <script>
-        $(document).on('click', '.nav-link', function () {
-            $(".active").removeClass("active").addClass("bg-white");
-            $(this).addClass("active");
-        });
-    </script>
-{% endblock javascript %}
-    

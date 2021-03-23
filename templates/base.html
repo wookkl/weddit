@@ -47,13 +47,12 @@
             var copyPk = copyId.replace('post_copy_','');
             var url = "{% url 'posts:detail' 1 %}";
             var copyUrlInput = document.getElementById("copyUrlInput"+copyPk); 
-
             copyUrlInput.value = window.location.href.slice(0, -1) + url.replace('1', copyPk);
             copyUrlInput.focus();
             copyUrlInput.select();
             document.execCommand('copy');
             alert("Copied!");
-        });
+    });
     </script>
     {% block javascript %}
     {% endblock javascript %} 

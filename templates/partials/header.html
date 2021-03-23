@@ -1,4 +1,4 @@
-<nav class=" navbar navbar-light bg-light navbar-expand-lg position-fixed w-100 top-0" style="height: 3rem; z-index: 1000   ;">
+<nav class="navbar navbar-light bg-light navbar-expand-lg position-fixed w-100 top-0" style="height: 3rem; z-index: 1000   ;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">Weddit</a>
         <form class="d-flex mb-0 w-50 border bg-white rounded-3" method="GET" action="{% url 'search' %}">
@@ -21,7 +21,7 @@
             </li>
         {% else %}
             <li class="nav-item">
-                <a class="nav-link btn btn-outline-primary text-primary rounded-pill px-4 me-3 py-1" href="{% url 'login' %}">Log In</a>
+                <a class="btn btn-outline-primary rounded-pill px-4 me-3 py-1" href="{% url 'login' %}">Log In</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link btn btn-primary rounded-pill px-4 py-1 text-white" href="{% url 'sign-up' %}">Sign Up</a>

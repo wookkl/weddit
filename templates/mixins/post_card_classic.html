@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-between align-items-center"  style="box-sizing: border-box;">
+    <div id="post_pk_{{ post.pk }}" class=" card-link w-100">
+    <div class="d-flex gap-2 align-items-center"">
+        <div class="rounded-3 d-flex justify-content-center align-items-center" style="width:80px; height:60px; background-color: #f8f8f8;">
+        {% if post.photo %}
+            <img class="rounded-3"src="{{ post.photo.url }}" alt="photo" width="80px" height="60px" />
+        {% else %}
+            <i class="far fa-comment-alt fa-2x" style="color: #888a8c;"></i>
+        {% endif %}
+        </div>
+        <div class="d-flex flex-column">
+            <span style="font-size: 0.9rem;">{{ post.content|truncatechars:80 }}</span>
+            <div class="text-muted d-flex align-items-baseline"  style="font-size: 0.8rem;">
+                <span><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></span>
+                <div class="mx-2">   
+                    <form class="m-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
+                        {% if not post.community.is_subscribed %}
+                            <button class="btn btn-primary rounded-circle p-0 m-0" style="height: 20px; width: 20px; padding-right: 5px;" type="submit">
+                                <span><i class="fas fa-plus fa-xs"></i></span>
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+                <span> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</span>
+            </div>
+            <div class="d-flex text-muted" >
+                <button style="font-size: 0.8rem;" type="button" class="btn btn-outline-secondary d-flex gap-1 align-items-baseline  border-0 rounded-0">
+                    <i class="fas fa-comment-alt"></i><span>{{ post.get_comment_count }} Comments</span>
+                </button>
+                <button style="font-size: 0.8rem;" id="post_copy_{{ post.pk }}" type="button" class="btn btn-outline-secondary d-flex gap-1 align-items-baseline copy-link border-0 rounded-0">
+                    <i class="fas fa-link"></i><span>Copy Link</span>
+                </button>
+                <input type='text' id='copyUrlInput{{ post.pk }}' style='position:absolute; left:-9999px'>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
