@@ -15,6 +15,7 @@ requests = "*"
 django-seed = "*"
 django-ckeditor = "*"
 model-bakery = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

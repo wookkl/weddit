@@ -9,6 +9,7 @@ from core.models import AbstractTimeStamp
 class Comment(AbstractTimeStamp):
     """Comment model definition"""
 
+    parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     post = models.ForeignKey("posts.Post", on_delete=models.CASCADE)
     writer = models.ForeignKey("users.User", on_delete=models.CASCADE)
     comment = RichTextUploadingField()

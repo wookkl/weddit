@@ -54,7 +54,6 @@ def home_view(request):
     except EmptyPage:
         paginated_posts = paginator.page(paginator.num_pages)
     community_obj = Community.objects.all().order_by("-pk")[:5]
-    print(paginated_posts)
     return render(
         request,
         "home.html",
