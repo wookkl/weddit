@@ -25,7 +25,7 @@ class Command(BaseCommand):
             img_temp.flush()
 
             community = Community.objects.create(
-                name=seeder.faker.,
+                name=community_name,
                 creater=get_user_model().objects.get(nickname="admin"),
                 description=seeder.faker.text(),
             )
