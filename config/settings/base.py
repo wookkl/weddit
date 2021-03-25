@@ -124,9 +124,10 @@ STATIC_ROOT = "static"
 
 # Media files
 
-MEDIA_ROOT = "uploads/"
-
 MEDIA_URL = "/media/"
+
+MEDIA_ROOT = "media"
+
 
 # AUTH
 

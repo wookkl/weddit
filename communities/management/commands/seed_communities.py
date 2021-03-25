@@ -20,6 +20,8 @@ class Command(BaseCommand):
         for community_name in community_list:
             res = requests.get("https://meme-api.herokuapp.com/gimme").json()
             photo_url = res.get("url")
+            if photo_url is None or res.get("code") == "403":
+                continue
             img_temp = NamedTemporaryFile(delete=True)
             img_temp.write(urlopen(photo_url).read())
             img_temp.flush()
