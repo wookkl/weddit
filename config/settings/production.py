@@ -4,8 +4,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = ["weddit.eba-be3gdpu7.ap-northeast-2.elasticbeanstalk.com"]
 
-DEBUG = False
-print(1)
+DEBUG = True
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
