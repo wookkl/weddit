@@ -130,7 +130,6 @@ dmypy.json
 
 uploads/
 
-.ebextensions/
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
