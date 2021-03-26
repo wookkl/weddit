@@ -38,6 +38,10 @@ class CreateCommentView(CreateView):
         comment.post = get_object_or_404(Post, pk=self.request.POST["post_pk"])
         comment.writer = self.request.user
         comment.save()
+        if not self.request.user.is_staff:
+            if self.request.user.posts.count() >= 3:
+                if self.request.user.comments.count() >= 3:
+                    self.request.user.is_staff = True
         return super().form_valid(form)
 
     def get_success_url(self):

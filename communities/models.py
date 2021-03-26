@@ -45,8 +45,5 @@ class Community(AbstractTimeStamp):
     def get_subscriber_count(self):
         return self._get_count(self.subscriptions.count())
 
-    def is_subscribed(self):
-        return self.subscriptions.filter(subscriber=self.creater).exists()
-
     class Meta:
         verbose_name_plural = "communities"

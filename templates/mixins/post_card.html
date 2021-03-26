@@ -1,3 +1,4 @@
+{% load simple_tags %}
 <div id="post_pk_{{ post.pk }}" class="card mb-3 d-flex flex-row card-link">
     <div class="bg-light rounded-start" style="width: 3rem;">
     </div>
@@ -12,17 +13,19 @@
                 <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
                 <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
             </div>
-            <div>   
-                <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
-                    {% csrf_token %}
-                    <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
-                    {% if not post.community.is_subscribed %}
+            
+            {% if request.user.is_authenticated %}
+                {% is_subscribed subscriber=request.user community=post.community as is_subscribed%}
+                {% if not is_subscribed %}
+                    <form method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
                         <button class="btn btn-primary rounded-pill px-2 py-0 align-baseline" type="submit">
                             <small><i class="fas fa-plus mx-1"></i>Join</small>
                         </button>
-                    {% endif %}
-                </form>
-            </div>
+                    </form>
+                {% endif %}
+            {% endif %}
         </div>    
         <div class="card-body pb-0">
             <p class="card-text">{{ post.content }}</p>

@@ -23,5 +23,8 @@ class Post(AbstractTimeStamp):
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"pk": self.pk})
 
+    def __str__(self):
+        return f"{self.writer}'s post"
+
     class Meta:
         default_related_name = "posts"

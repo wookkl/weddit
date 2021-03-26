@@ -16,3 +16,13 @@ DATABASES = {
         "PORT": os.environ["RDS_PORT"],
     }
 }
+
+STATIC_URL = "/static/"
+
+STATIC_ROOT = "static"
+
+# Media files
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = "media"
