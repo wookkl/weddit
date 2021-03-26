@@ -41,10 +41,11 @@ class PostCreateView(SuccessMessageMixin, CreateView):
         return form_class(user=self.request.user, **self.get_form_kwargs())
 
     def form_valid(self, form):
-        if not self.request.user.is_staff:
-            if self.request.user.posts.count() >= 3:
-                if self.request.user.comments.count() >= 3:
-                    self.request.user.is_staff = True
+        if not self.request.user.can_create_community:
+            if self.request.user.posts.count() >= 20:
+                if self.request.user.comments.count() >= 100:
+                    self.request.user.can_create_community = True
+                    self.request.user.save()
         return super().form_valid(form)
 
     def form_invalid(self, form):

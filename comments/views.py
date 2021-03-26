@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DetailView
 from .forms import CommentForm
 from .models import Comment
 from .decorators import comment_ownership_required
+
 from posts.models import Post
 
 
@@ -38,10 +39,11 @@ class CreateCommentView(CreateView):
         comment.post = get_object_or_404(Post, pk=self.request.POST["post_pk"])
         comment.writer = self.request.user
         comment.save()
-        if not self.request.user.is_staff:
-            if self.request.user.posts.count() >= 3:
-                if self.request.user.comments.count() >= 3:
-                    self.request.user.is_staff = True
+        if not self.request.user.can_create_community:
+            if self.request.user.posts.count() >= 20:
+                if self.request.user.comments.count() >= 100:
+                    self.request.user.can_create_community = True
+                    self.request.user.save()
         return super().form_valid(form)
 
     def get_success_url(self):
