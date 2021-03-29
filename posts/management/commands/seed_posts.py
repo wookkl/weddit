@@ -29,6 +29,8 @@ class Command(BaseCommand):
             title = meme.get("title")
             url = meme.get("url")
             postlink = meme.get("postLink")
+            if url is None or meme.get("code") == "403":
+                continue
             content = f"{title}  출처:{postlink}"
             img_temp = NamedTemporaryFile(delete=True)
             img_temp.write(urlopen(url).read())
