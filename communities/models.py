@@ -24,8 +24,8 @@ class Community(AbstractTimeStamp):
     )
     title = models.CharField(max_length=30, null=True)
     description = models.CharField(max_length=255, blank=True, default="")
-    avatar = models.ImageField(null=True, upload_to="avatar/communities/")
-    photo = models.ImageField(null=True, upload_to="photos/communities/")
+    avatar = models.ImageField(null=True, blank=True, upload_to="avatar/communities/")
+    photo = models.ImageField(null=True, blank=True, upload_to="photos/communities/")
 
     def __str__(self):
         return self.name
