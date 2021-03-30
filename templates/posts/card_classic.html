@@ -1,10 +1,12 @@
 {% load simple_tags %}
+{% get_photo_url_or_none object=post as post_photo_url %}
+
 <div class="d-flex justify-content-between align-items-center"  style="box-sizing: border-box;">
     <div id="post_pk_{{ post.pk }}" class=" card-link w-100">
     <div class="d-flex gap-2 align-items-center"">
         <div class="rounded-3 d-flex justify-content-center align-items-center" style="width:80px; height:60px; background-color: #f8f8f8;">
-        {% if post.photo %}
-            <img class="rounded-3"src="{{ post.photo.url }}" alt="photo" width="80px" height="60px" />
+        {% if post_photo_url %}
+            <img class="rounded-3"src="{{ post_photo_url }}" alt="photo" width="80px" height="60px" />
         {% else %}
             <i class="far fa-comment-alt fa-2x" style="color: #888a8c;"></i>
         {% endif %}

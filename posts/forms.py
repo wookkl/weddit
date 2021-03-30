@@ -8,7 +8,13 @@ class PostForm(forms.ModelForm):
     """Post form definition"""
 
     content = forms.CharField(
-        widget=forms.Textarea(attrs={"placeholder": "CONTENT", "rows": 9})
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": "CONTENT",
+                "rows": 9,
+                "cols": 150,
+            }
+        )
     )
     photo = forms.ImageField(required=False)
 
@@ -21,6 +27,14 @@ class PostForm(forms.ModelForm):
             )
             self.fields["community"].queryset = Community.objects.filter(pk__in=pk_list)
 
+    class Meta:
+        model = Post
+        fields = ["community", "content", "photo"]
+
+
+class PostCreateForm(PostForm):
+    """Post create form definition"""
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.writer = self.user
@@ -28,6 +42,8 @@ class PostForm(forms.ModelForm):
             instance.save(commit)
         return instance
 
-    class Meta:
-        model = Post
-        fields = ["community", "content", "photo"]
+
+class PostUpdateForm(PostForm):
+    """Post form definition"""
+
+    pass

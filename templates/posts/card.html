@@ -1,19 +1,25 @@
 {% load simple_tags %}
+{% get_photo_url_or_none object=post as post_photo_url %}
+{% get_avatar_url_or_none object=post.community as communuty_avatar_url %}
+
 <div id="post_pk_{{ post.pk }}" class="card mb-3 d-flex flex-row card-link">
     <div class="bg-light rounded-start" style="width: 3rem;">
     </div>
     <div class="p-2 w-100 pb-0">
         <div class="d-flex justify-content-between gap-1">
             <div class="text-muted d-flex gap-2">
-                {% if post.community.avatar %}
-                    <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ post.community.avatar.url }}"/>
+                {% if communuty_avatar_url %}
+                    <img class="border-0  p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ communuty_avatar_url }}"/>
                 {% else %}
-                    <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;"><span style="font-size: 1rem;">{{ post.community.name|first }}</span></div>
+                    <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;">
+                        <span style="font-size: 1rem;">{{ post.community.name|first }}</span>
+                    </div>
                 {% endif %}
-                <small><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></small>
-                <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+                <small>
+                    <a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a>
+                </small>
+                <small> • Posted by <a class="link-secondary" href="{{ post.writer.get_absolute_url }}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
             </div>
-            
             {% if request.user.is_authenticated %}
                 {% is_subscribed subscriber=request.user community=post.community as is_subscribed%}
                 {% if not is_subscribed %}
@@ -29,8 +35,8 @@
         </div>    
         <div class="card-body pb-0">
             <p class="card-text">{{ post.content }}</p>
-            {% if post.photo %}
-                <img src="{{ post.photo.url }}" style="max-width: 400px; margin: auto; display: block;" alt="post_photo"/>
+            {% if post_photo_url %}
+                <img src="{{ post_photo_url }}" style="max-width: 400px; margin: auto; display: block;" alt="post_photo"/>
             {% endif %}
         </div>
         <div class="d-flex text-muted " style="font-size: 0.8rem;">

@@ -2,7 +2,7 @@
 <div class="w-100 my-1" style="background-color: lightgrey; height: 1px;"></div>
 <div class="d-flex flex-column gap-2 my-2">
     {% for post in posts %}
-        {% include 'mixins/post_card_classic.html' %}
+        {% include 'posts/card_classic.html' %}
     {% endfor %}
 </div>
 {% if type != None %}
