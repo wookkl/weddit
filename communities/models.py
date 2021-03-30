@@ -42,6 +42,9 @@ class Community(AbstractTimeStamp):
     def get_avatar_url(self):
         return self.avatar.url
 
+    def get_photo_url(self):
+        return self.photo.url
+
     def get_subscriber_count(self):
         return self._get_count(self.subscriptions.count())
 

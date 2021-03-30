@@ -17,7 +17,7 @@ class CommunityListView(ListView):
     queryset = Community.objects.all()
     paginate_by = 15
     paginate_orphans = 3
-    template_name = "communities/list_card.html"
+    template_name = "communities/list.html"
     ordering = ["-id"]
     http_method_names = ["get"]
     context_object_name = "communities"
