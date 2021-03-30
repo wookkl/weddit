@@ -21,6 +21,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 
 admin_urls = os.environ.get("ADMIN_URL", "admin")
+
 urlpatterns = [
     path(f"{admin_urls}/", admin.site.urls),
     path("", include("core.urls")),

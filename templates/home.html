@@ -5,45 +5,32 @@
 {% endblock page_title %}
 
 {% block content %}
-<div class="d-flex px-5 justify-content-center gap-3 mt-5">
-  <div class="infinite-container" style="max-width: 650px; width: 45rem;">
-    <small class="d-block mx-auto my-3">Lastest posts</small>
-    {% include 'posts/list.html' %}
-  </div>
-  <div style="width: 20rem;">
-    <small class="d-block mx-auto my-3">&nbsp;</small>
-    <ul class="list-group w-100">
-      <li class="list-group-item">Lastest communities</li>
-      {% for community in communities %}
-        <li class="list-group-item d-flex gap-3 align-items-center">
-          <span>{{ forloop.counter }}.</span>
-          {% if community.avatar %}
-            <img class="border-0  p-0 rounded-circle" style="width: 40px;height:40px;" src="{{ community.avatar.url }}"/>
-          {% else %}
-            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 2.5rem; height:2.5rem;"><span style="font-size: 1.5rem;">{{community.name|first}}</span></div>
-          {% endif %}
-          <a class="text-dark" href="{% url 'communities:detail' community.slug %}" style="text-decoration: none;">{{ community.name }}</a>
-        </li>
-      {% endfor %}
-        <li class="list-group-item">
-          <a class="btn rounded-pill bg-primary text-white w-100" href="{% url 'communities:list' %}">View All</a>
-        </li>
-    </ul>
+<div class="d-flex mt-5 flex-column mx-auto gap-3 align-items-center">
+  <div class="d-flex gap-3">
+    <div class="infinite-container" style="max-width: 650px; width: 45rem;">
+      <small class="d-block mb-2">Lastest posts</small>
+      {% include 'posts/list.html' %}   
+    </div>
+    <div class="d-flex flex-column gap-4" style="width: 20rem;">
+      <ul class="list-group w-100">
+        <li class="list-group-item">Lastest communities</li>
+        {% for community in communities %}
+          <li class="list-group-item d-flex gap-3 align-items-center">
+            <span>{{ forloop.counter }}.</span>
+            {% if community.avatar %}
+              <img class="border-0  p-0 rounded-circle" style="width: 40px;height:40px;" src="{{ community.avatar.url }}"/>
+            {% else %}
+              <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 2.5rem; height:2.5rem;"><span style="font-size: 1.5rem;">{{community.name|first}}</span></div>
+            {% endif %}
+            <a class="text-dark" href="{% url 'communities:detail' community.slug %}" style="text-decoration: none;">{{ community.name }}</a>
+          </li>
+        {% endfor %}
+          <li class="list-group-item">
+            <a class="btn rounded-pill bg-primary text-white w-100" href="{% url 'communities:list' %}">View All</a>
+          </li>
+      </ul>
+      {% include 'partials/about.html' %}
+    </div>
   </div>
 </div>
 {% endblock content %}
-
-{% block javascript %}
-  <script>
-    var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-        $('.loading').show();
-    },  
-    onAfterPageLoad: function ($items) {
-        $('.loading').hide();
-    }
-    });
-  </script>
-{% endblock javascript %}
-  

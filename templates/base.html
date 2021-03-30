@@ -36,23 +36,33 @@
     <script src="{% static 'js/infinite.min.js' %}"></script>
     <script>
         $(document).on('click', '.card-link', function () {
-            var url = "{% url 'posts:detail' 1 %}";
-            var pk = $(this).attr('id');
+            const url = "{% url 'posts:detail' 1 %}";
+            let pk = $(this).attr('id');
             pk = pk.replace('post_pk_','');
             document.location.href = url.replace('1', pk);
         });
         $(document).on('click', '.copy-link', function () {
-            var copyId = $(this).attr('id');
-            var copyPk = copyId.replace('post_copy_','');
-            var url = "{% url 'posts:detail' 1 %}";
-            var copyUrlInput = document.getElementById("copyUrlInput"+copyPk); 
+            const copyId = $(this).attr('id');
+            const copyPk = copyId.replace('post_copy_','');
+            const url = "{% url 'posts:detail' 1 %}";
+            const copyUrlInput = document.getElementById("copyUrlInput"+copyPk); 
             copyUrlInput.value = window.location.href.slice(0, -1) + url.replace('1', copyPk);
             copyUrlInput.focus();
             copyUrlInput.select();
             document.execCommand('copy');
             alert("Copied!");
-    });
+        });
+        const infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            onBeforePageLoad: function () {
+                $('.loading').show();
+            },  
+            onAfterPageLoad: function ($items) {
+                $('.loading').hide();
+            }
+            });
+        $(document).on('click', '.delete', function(){
+            return confirm('Are you sure you want to delete this?');
+            })
     </script>
-    {% block javascript %}
-    {% endblock javascript %} 
 </html>

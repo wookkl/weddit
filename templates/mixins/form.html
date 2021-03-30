@@ -1,8 +1,17 @@
+{% extends 'base.html' %}
+
 {% load bootstrap4 %}
-<div class="container-sm w-{{ width }} bg-light p-3 rounded">
-    <form method="POST" enctype="multipart/form-data" class="align-middle">
-        {% csrf_token %}
-        {% include 'mixins/form_input.html' with form=form %}
-        <input class="btn btn-primary mt-1" type="submit" value="{{ cta }}">
-    </form>
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="container d-flex flex-column justify-content-center align-items-center bg-light p-3 rounded-3" style="width: fit-content; height: fit-content;">
+        {% block form_header %}
+        {% endblock form_header %}
+        <form method="POST" enctype="multipart/form-data" class="align-middle">
+            {% csrf_token %}
+            {% include 'mixins/form_input.html' with form=form %}
+            {% block form_submit %}
+            {% endblock form_submit %}
+        </form>
+    </div>
 </div>
+{% endblock content %}
