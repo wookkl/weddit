@@ -7,7 +7,6 @@ from django.core.files import File
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from django.core.management.base import BaseCommand
-from django_seed import Seed
 
 from posts.models import Post
 from communities.models import Community
@@ -23,7 +22,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         number = int(options.get("number"))
-        number_of_communities = Community.objects.count()
+        number_of_communities = Community.objects.all()
         for _ in range(number):
             meme = requests.get("https://meme-api.herokuapp.com/gimme").json()
             title = meme.get("title")
@@ -31,7 +30,7 @@ class Command(BaseCommand):
             postlink = meme.get("postLink")
             if url is None or meme.get("code") == "403":
                 continue
-            content = f"{title}  출처:{postlink}"
+            content = mark_safe(f'{title}&nbsp <h3><a href="{postlink}">출처</a></h3>')
             img_temp = NamedTemporaryFile(delete=True)
             img_temp.write(urlopen(url).read())
             img_temp.flush()
@@ -40,7 +39,9 @@ class Command(BaseCommand):
                 content=content,
                 writer=get_user_model().objects.get(nickname="admin"),
                 community=Community.objects.get(
-                    pk=random.randint(1, number_of_communities)
+                    pk=number_of_communities[
+                        random.randint(0, len(number_of_communities) - 1)
+                    ].pk
                 ),
             )
             img_temp = NamedTemporaryFile(delete=True)
