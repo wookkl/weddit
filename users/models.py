@@ -35,6 +35,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse("user:detail", kwargs={"nickname": self.nickname})
 
+    def get_avatar_url(self):
+        return self.avatar.url
+
     def save(self, *args, **kwargs):
         alphanumeric_validator(self.nickname)
         super().save(*args, **kwargs)

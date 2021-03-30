@@ -1,7 +1,10 @@
+{% load simple_tags %}
+
+{% get_avatar_url_or_none object=user as user_avatar_url %}
 <div class="d-flex justify-content-between" >
-    <div class="d-flex gap-2 align-items-center">
-        {% if user.avatar %}
-            <img src="{{ user.avatar.url }}" alt="avatar" width="2rem" height="2rem"/>
+    <div class="d-flex gap-2 align-items-center"> 
+        {% if use_avatar_url %}
+            <img src="{{ user_obj_avatar_url }}" alt="avatar" width="40px" height="40px"/>
         {% else %}
             <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 2rem; height: 2rem;"><span>{{ user.nickname|first }}</span></div>
         {% endif %}

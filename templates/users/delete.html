@@ -5,8 +5,10 @@
 {% endblock page_title %}
     
 {% block content %} 
+<div class="d-flex flex-column justify-content-center align-items-middle" style="min-height: 70vh;">
     <div class="container d-flex flex-column justify-content-center align-items-center h-50 w-25">
         <p class="text-danger">Warnng: Account deletion cannot be undone. If you're absolutely sure you want to delete youa account. enter your password to continue</p>
         {% include 'mixins/form.html' with form=form cta="Delete my account" %}
     </div>
+</div>
 {% endblock content %}

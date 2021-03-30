@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
+{% load simple_tags %}
 
 {% block page_title %}
     {{ user_obj.nickname }} - 
 {% endblock page_title %}
 
 {% block content %}
+    {% get_avatar_url_or_none object=user_obj as user_obj_avatar_url %}
     <div class="container d-flex gap-3 mx-auto justify-content-center mt-5">
         <div class="infinite-container" style="max-width: 600px; width: 40rem;">
             {% if user_obj.posts.count %}
                 {% for post in post_obj %}
                 <div class="infinite-item">
-                    {% include 'mixins/post_card.html' with post=post %}
+                    {% include 'posts/card.html' with post=post %}
                 </div>
                 {% endfor %}
                 {% if post_obj.has_next %}
@@ -30,8 +32,8 @@
             <div class="bg-light rounded-3 border" style="width: 20rem; height: fit-content;">
                 <div class="btn-primary rounded-top pl-2 align-middle position-relative"  style="width: 30rem; height: 6rem; display: table-cell;">
                     <div style="position: absolute; bottom: -1.5rem;">
-                    {% if user.avatar %}
-                        <img class="border border-4 border-white img-thumbnail" style="width: 5rem;height:5rem;" src="{{ user_obj.avatar.url }}"/>
+                    {% if user_obj_avatar_url %}
+                        <img class="border border-4 border-white img-thumbnail" style="width: 5rem;height:5rem;" src="{{ user_obj_avatar_url }}"/>
                     {% else %}
                         <div class="border border-4 border-white img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 5rem;height:5rem;"><span class="fs-2">{{user_obj.nickname|first}}</span></div>
                     {% endif %}

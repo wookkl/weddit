@@ -1,12 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'mixins/form.html' %}
 
 {% block page_title %}
     Update - 
 {% endblock page_title %}
     
-{% block content %}
-    <div class="container d-flex flex-column justify-content-center align-items-center ">
-         {% include 'mixins/form.html' with form=form cta="Update" width="25" %}
-    </div>
-{% endblock content %}
-    
+{% block form_submit %}
+    <input class="btn btn-primary mt-1" type="submit" value="Update">
+{% endblock form_submit %}
