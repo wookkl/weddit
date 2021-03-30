@@ -40,7 +40,9 @@
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
             <a class="text-dark" href="{{ post.community.get_absolute_url }} " style=" text-decoration: none;">
-                <img class="rounded-top"src="{{ post.community.photo.url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
+                {% if post.community.photo %}
+                    <img class="rounded-top"src="{{ post.community.photo.url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
+                {% endif %}
                 <div class="p-3">
                     <div class="mb-1 d-flex align-items-center gap-2">
                         {% if post.community.avatar %}
@@ -61,7 +63,7 @@
                         <span>Created {{ post.community.created_at|date:'Y. m. d' }}</span>
                     </div>
                     {% if request.user.is_authenticated %} 
-                        {% is_subscribed subscriber=request.user community=post.community as is_subscribed%}
+                        {% is_subscribed subscriber=request.user community=post.community as is_subscribed %}
                         <form class="mb-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
                             {% csrf_token %}
                             <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>

@@ -7,7 +7,13 @@ from django.utils.translation import gettext as _
 class UserAdmin(admin.ModelAdmin):
 
     ordering = ("id",)
-    list_display = ("email", "nickname", "is_staff", "is_superuser")
+    list_display = (
+        "email",
+        "nickname",
+        "is_staff",
+        "is_superuser",
+        "can_create_community",
+    )
     fieldsets = (
         (None, {"fields": ("id", "email", "password")}),
         (
@@ -21,7 +27,14 @@ class UserAdmin(admin.ModelAdmin):
         ),
         (
             _("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser")},
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "can_create_community",
+                )
+            },
         ),
         (_("Important dates"), {"fields": ("last_login",)}),
     )

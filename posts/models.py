@@ -12,7 +12,7 @@ class Post(AbstractTimeStamp):
     writer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
-    photo = models.ImageField(null=True, upload_to="photos/posts/")
+    photo = models.ImageField(null=True, upload_to="photos/posts/", blank=True)
 
     def get_photo_url(self):
         return self.photo.url
