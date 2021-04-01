@@ -26,5 +26,16 @@ class Post(AbstractTimeStamp):
     def __str__(self):
         return f"{self.writer}'s post"
 
+    def get_vote_score(self):
+        votes = self.votes.all()
+        up_votes = down_votes = 0
+        for vote in votes:
+            if vote.like:
+                up_votes += 1
+            else:
+                down_votes += 1
+        score = up_votes - down_votes
+        return self._get_count(score)
+
     class Meta:
         default_related_name = "posts"

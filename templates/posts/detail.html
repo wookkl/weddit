@@ -3,95 +3,101 @@
 {% load simple_tags %}
 
 {% block page_title %}
-    {{ post.content|truncatewords:3}} - 
+  {{ post.content|truncatewords:3}} - 
 {% endblock page_title %}
     
 {% block content %}
-{% get_avatar_url_or_none object=post.community as communuty_avatar_url %}
-{% get_photo_url_or_none object=post.community as community_photo_url %}
-{% get_photo_url_or_none object=post as post_photo_url %}
-    <div class="d-flex justify-content-center gap-3 mt-5">
-        <div style="max-width: 1000px; width: 50rem;">
-            <div class="card mb-1 mx-auto d-flex flex-row">
-                <div class="bg-light rounded-start" style="width: 7%;"></div>
-                <div class="p-3 mx-auto" style="width: 93%;">
-                    <div class="d-flex justify-content-between ">
-                        <div class="text-muted d-flex gap-1">
-                            {% if communuty_avatar_url %}
-                                <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ communuty_avatar_url }}"/>
-                            {% else %}
-                                <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;">
-                                    <span style="font-size: 1rem;">{{ post.community.name|first }}</span>
-                                </div>
-                            {% endif %}
-                            <small><a class="link-secondary" href="{{ post.community.get_absolute_url }}">{{ post.community.name }}</a></small>
-                            <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
-                        </div>
-                        {% if request.user == post.writer %}
-                            <div class="d-flex gap-2 fw-bold align-items-center" style="font-size:x-small;">
-                                <a href="{% url 'posts:update' pk=post.pk %}" class="btn btn-primary rounded-pill">Update</a>
-                                <form class="delete d-flex align-items-center mb-0" action="{% url 'posts:delete' pk=post.pk %}" method="post">
-                                    {% csrf_token %}
-                                    <button class="btn btn-danger rounded-pill" type="submit">Delete</button>
-                                </form>
-                            </div>
-                        {% endif %}
-                    </div>    
-                    <div class="card-body">
-                        <p class="card-text">{{ post.content|linebreaks }}</p>
-                    </div>
-                    {% if post_photo_url %}
-                    <div class="w-100 d-flex justify-content-center">
-                        <img src="{{ post_photo_url }}" style="max-width: 400px;" alt="post_photo"/>
-                    </div>
-                    {% endif %}
+  {% get_avatar_url_or_none object=post.community as communuty_avatar_url %}
+  {% get_photo_url_or_none object=post.community as community_photo_url %}
+  {% get_photo_url_or_none object=post as post_photo_url %}
+  <div class="d-flex justify-content-center gap-3 mt-5">
+    <div style="max-width: 1000px; width: 50rem;">
+      <div class="card mb-1 mx-auto d-flex flex-row">
+        {% if request.user.is_authenticated %}
+          <div class="bg-light rounded-start d-flex flex-column align-items-center pt-2 gap-1" style="width: 7%;">
+            <a href="{% url 'votes:toggle' %}?pk={{ post.pk }}&status=up&next={{ request.get_full_path }}"><i class="fas fa-arrow-up"></i></a> 
+            <span>{{ post.get_vote_score }}</span>
+            <a href="{% url 'votes:toggle' %}?pk={{ post.pk }}&status=down&next={{ request.get_full_path }}"><i class="fas fa-arrow-down text-danger"></i></a> 
+          </div>
+        {% endif %}
+        <div class="p-3 mx-auto" style="width: 93%;">
+          <div class="d-flex justify-content-between ">
+            <div class="text-muted d-flex gap-1">
+              {% if communuty_avatar_url %}
+                <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ communuty_avatar_url }}"/>
+              {% else %}
+                <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;">
+                  <span style="font-size: 1rem;">{{ post.community.name|first }}</span>
                 </div>
+              {% endif %}
+              <small><a class="link-secondary" href="{{ post.community.get_absolute_url }}">{{ post.community.name }}</a></small>
+              <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
             </div>
-            <div class="card mb-1 py-2 mx-auto px-3">
-                {% include 'comments/create.html' with post=post %}
-                {% include 'comments/list.html' with comments=comments %}
+            {% if request.user == post.writer %}
+              <div class="d-flex gap-2 fw-bold align-items-center" style="font-size:x-small;">
+                <a href="{% url 'posts:update' pk=post.pk %}" class="btn btn-primary rounded-pill">Update</a>
+                <form class="delete d-flex align-items-center mb-0" action="{% url 'posts:delete' pk=post.pk %}" method="post">
+                  {% csrf_token %}
+                  <button class="btn btn-danger rounded-pill" type="submit">Delete</button>
+                </form>
+              </div>
+            {% endif %}
+          </div>    
+          <div class="card-body">
+            <p class="card-text">{{ post.content|linebreaks }}</p>
+          </div>
+          {% if post_photo_url %}
+            <div class="w-100 d-flex justify-content-center">
+              <img src="{{ post_photo_url }}" style="max-width: 400px;" alt="post_photo"/>
             </div>
+          {% endif %}
         </div>
-        <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
-            <a class="text-dark" href="{{ post.community.get_absolute_url }} " style=" text-decoration: none;">
-                {% if community_photo_url %}
-                    <img class="rounded-top"src="{{ community_photo_url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
-                {% endif %}
-                <div class="p-3">
-                    <div class="mb-1 d-flex align-items-center gap-2">
-                        {% if community_avatar_url %}
-                            <img class="rounded-circle" src="{{ community_avatar_url }}" style="width: 4rem; height: 4rem; object-fit: cover;"/>
-                        {% else %}
-                            <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 4rem;height:4rem;">
-                                <span style="font-size: 2rem;">{{post.community.name|first}}</span>
-                            </div>
-                        {% endif %}
-                        <span>{{ post.community.name }}</span>
-                    </div>
-                    <p class="fw-light">{{ post.community.description }}</p>
-                    <div class="d-flex flex-column">
-                        <big>{{ post.community.get_subscriber_count }}</big>
-                        <small>Members</small>
-                    </div>
-                    <div class="my-2" style="width: 100%; height: 1px; background-color:lightgray;"></div>
-                    <div class="fw-light my-2">
-                        <i class="fas fa-birthday-cake mr-2"></i>
-                        <span>Created {{ post.community.created_at|date:'Y. m. d' }}</span>
-                    </div>
-                    {% if request.user.is_authenticated %} 
-                        {% is_subscribed subscriber=request.user community=post.community as is_subscribed %}
-                        <form class="mb-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
-                            {% csrf_token %}
-                            <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
-                            <button class="w-100 btn{% if is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
-                                <small class="fw-bold">
-                                    {% if is_subscribed %}Drop{% else %}Join{% endif %}
-                                </small>
-                            </button>
-                        </form> 
-                    {% endif %}
-                </div>
-            </a>
-        </div>
+      </div>
+      <div class="card mb-1 py-2 mx-auto px-3">
+        {% include 'comments/create.html' with post=post %}
+        {% include 'comments/list.html' with comments=comments %}
+      </div>
     </div>
+    <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">
+      <a class="text-dark" href="{{ post.community.get_absolute_url }} " style=" text-decoration: none;">
+        {% if community_photo_url %}
+          <img class="rounded-top"src="{{ community_photo_url }}" style="width: 100%; height: 3rem; object-fit: cover;"/>
+        {% endif %}
+        <div class="p-3">
+          <div class="mb-1 d-flex align-items-center gap-2">
+            {% if community_avatar_url %}
+              <img class="rounded-circle" src="{{ community_avatar_url }}" style="width: 4rem; height: 4rem; object-fit: cover;"/>
+            {% else %}
+              <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 4rem;height:4rem;">
+                <span style="font-size: 2rem;">{{post.community.name|first}}</span>
+              </div>
+            {% endif %}
+            <span>{{ post.community.name }}</span>
+          </div>
+          <p class="fw-light">{{ post.community.description }}</p>
+          <div class="d-flex flex-column">
+            <big>{{ post.community.get_subscriber_count }}</big>
+            <small>Members</small>
+          </div>
+          <div class="my-2" style="width: 100%; height: 1px; background-color:lightgray;"></div>
+          <div class="fw-light my-2">
+            <i class="fas fa-birthday-cake mr-2"></i>
+            <span>Created {{ post.community.created_at|date:'Y. m. d' }}</span>
+          </div>
+          {% if request.user.is_authenticated %} 
+            {% is_subscribed subscriber=request.user community=post.community as is_subscribed %}
+            <form class="mb-0" method="post" action="{% url 'subscriptions:toggle' %}?next={{ request.get_full_path }}">
+                {% csrf_token %}
+                <input type="hidden" name="community_pk" value="{{ post.community.pk }}"/>
+                <button class="w-100 btn{% if is_subscribed %} btn-danger {% else %} btn-secondary {% endif %} rounded-pill align-baseline" type="submit">
+                    <small class="fw-bold">
+                        {% if is_subscribed %}Drop{% else %}Join{% endif %}
+                    </small>
+                </button>
+            </form> 
+          {% endif %}
+        </div>
+      </a>
+    </div>
+  </div>
 {% endblock content %}

@@ -42,6 +42,7 @@ PROJECT_APPS = [
     "communities",
     "posts",
     "subscriptions",
+    "votes",
 ]
 
 THRID_PARTY_APPS = [

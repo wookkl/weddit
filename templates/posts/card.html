@@ -4,6 +4,13 @@
 
 <div id="post_pk_{{ post.pk }}" class="card mb-3 d-flex flex-row card-link">
     <div class="bg-light rounded-start" style="width: 3rem;">
+        {% if request.user.is_authenticated %}
+          <div class="bg-light rounded-start d-flex flex-column align-items-center pt-2 gap-1">
+            <a href="{% url 'votes:toggle' %}?pk={{ post.pk }}&status=up&next={{ request.get_full_path }}"><i class="fas fa-arrow-up"></i></a> 
+            <span>{{ post.get_vote_score }}</span>
+            <a href="{% url 'votes:toggle' %}?pk={{ post.pk }}&status=down&next={{ request.get_full_path }}"><i class="fas fa-arrow-down text-danger"></i></a> 
+          </div>
+        {% endif %}
     </div>
     <div class="p-2 w-100 pb-0">
         <div class="d-flex justify-content-between gap-1">
@@ -36,7 +43,7 @@
         <div class="card-body pb-0">
             <p class="card-text">{{ post.content|linebreaks|truncatewords:5 }}</p>
             {% if post_photo_url %}
-                <img src="{{ post_photo_url }}" style="max-width: 400px; margin: auto; display: block; max-height: 600px;" alt="post_photo"/>
+                <img src="{{ post_photo_url }}" style="max-width: 400px; margin: auto; display: block; max-height: 600px; width: fit-content;height:fit-content;" alt="post_photo"/>
             {% endif %}
         </div>
         <div class="d-flex text-muted " style="font-size: 0.8rem;">

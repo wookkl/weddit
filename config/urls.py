@@ -30,6 +30,7 @@ urlpatterns = [
     path("posts/", include("posts.urls", namespace="posts")),
     path("subscriptions/", include("subscriptions.urls", namespace="subscriptions")),
     path("comments/", include("comments.urls", namespace="comments")),
+    path("votes/", include("votes.urls", namespace="votes")),
     path("ckeditor/", include("ckeditor_uploader.urls")),
 ]
 
