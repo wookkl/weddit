@@ -20,10 +20,12 @@ class Command(BaseCommand):
         number = int(options.get("number"))
         seeder = Seed.seeder()
         posts = Post.objects.all()
+        users = get_user_model().objects.all()
+
         for _ in range(number):
             comment = Comment.objects.create(
                 comment=seeder.faker.text(),
-                writer=get_user_model().objects.get(nickname="admin"),
+                writer=users[random.randint(0, len(users) - 1)],
                 post=posts[random.randint(0, len(posts) - 1)],
             )
             comment.save()

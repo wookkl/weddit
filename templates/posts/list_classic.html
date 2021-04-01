@@ -6,5 +6,5 @@
     {% endfor %}
 </div>
 {% if type != None %}
-    {% include 'partials/pagination.html' with page_obj=posts %}
+    {% include 'core/pagination.html' with page_obj=posts %}
 {% endif %}

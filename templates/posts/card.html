@@ -34,9 +34,9 @@
             {% endif %}
         </div>    
         <div class="card-body pb-0">
-            <p class="card-text">{{ post.content }}</p>
+            <p class="card-text">{{ post.content|linebreaks|truncatewords:5 }}</p>
             {% if post_photo_url %}
-                <img src="{{ post_photo_url }}" style="max-width: 400px; margin: auto; display: block;" alt="post_photo"/>
+                <img src="{{ post_photo_url }}" style="max-width: 400px; margin: auto; display: block; max-height: 600px;" alt="post_photo"/>
             {% endif %}
         </div>
         <div class="d-flex text-muted " style="font-size: 0.8rem;">

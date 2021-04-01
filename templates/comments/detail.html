@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="d-flex justify-content-start gap-2 mb-4">
+<div class="d-flex justify-content-start gap-2">
     <div class="d-flex flex-column justify-content-start gap-1 align-items-center">
         {% if comment.writer.avatar %}
             <img class="rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ comment.writer.avatar.url }}"/>

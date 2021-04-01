@@ -7,10 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.views.generic.edit import FormMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import Post
 from .forms import PostCreateForm, PostUpdateForm
 from .decorators import post_ownership_required
+
 from comments.forms import CommentForm
 
 
@@ -84,11 +86,30 @@ class PostDetailView(FormMixin, DetailView):
 
     model = Post
     template_name = "posts/detail.html"
-    form_class = CommentForm
-    paginate_by = 10
-    paginate_orphans = 5
     context_object_name = "post"
-    queryset = Post.objects.prefetch_related("comments").all()
+    form_class = CommentForm
+    queryset = (
+        Post.objects.prefetch_related("comments").prefetch_related("community").all()
+    )
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = self.get_related_comments()
+        context["comments"] = comments
+        return context
+
+    def get_related_comments(self):
+        queryset = self.object.comments.all().order_by("created_at")
+        paginator = Paginator(queryset, 5)
+        page = self.request.GET.get("page", 1)
+        try:
+            comments = paginator.page(page)
+        except PageNotAnInteger:
+            comments = paginator.page(1)
+        except EmptyPage:
+            comments = paginator.page(paginator.num_pages)
+        return comments
 
 
 @login_required

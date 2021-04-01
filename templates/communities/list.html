@@ -7,23 +7,13 @@
 {% endblock page_title %}
   
 {% block content %}
-  <ul class="list-group w-50 mx-auto mt-5 infinite-container">
-    <li class="list-group-item ">Lastest communities</li>
+  <div class="d-flex flex-column gap-2 bg-light">
     {% for community in communities %}
-      {% get_avatar_url_or_none object=community as community_avatar_url %}
-      <li class="list-group-item d-flex gap-3 align-items-center infinite-item">
-        <span>{{ page_obj.start_index|add:forloop.counter|sub:1 }}.</span>
-        {% if community_avatar_url %}
-          <img class="border-0  p-0 rounded-circle" style="width: 40px;height:40px;" src="{{ community_avatar_url }}"/>
-        {% else %}
-          <div class="border-0  p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 2.5rem; height:2.5rem;"><span style="font-size: 1.5rem;">{{community.name|first}}</span></div>
-        {% endif %}
-        <a class="text-dark" href="{% url 'communities:detail' community.slug %}" style="text-decoration: none;">{{ community.name }}</a>
-      </li>
+      {% include 'communities/card_classic.html' %}
     {% endfor %}
-    {% if page_obj.has_next %}
-        <a class="infinite-more-link btn btn-secondary" href="?page={{ page_obj.next_page_number }}">More</a>
-    {% endif %}
-  </ul>
+  </div>
+  {% include 'partials/pagination.html' with page_obj=page_obj %}
 {% endblock content %}
 
+
+    

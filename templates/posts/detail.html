@@ -12,39 +12,44 @@
 {% get_photo_url_or_none object=post as post_photo_url %}
     <div class="d-flex justify-content-center gap-3 mt-5">
         <div style="max-width: 1000px; width: 50rem;">
-            <div class="card mb-1 py-2 mx-auto px-3">
-                <div class="d-flex justify-content-between">
-                    <div class="text-muted d-flex gap-1">
-                        {% if communuty_avatar_url %}
-                            <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ communuty_avatar_url }}"/>
-                        {% else %}
-                            <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;">
-                                <span style="font-size: 1rem;">{{ post.community.name|first }}</span>
+            <div class="card mb-1 mx-auto d-flex flex-row">
+                <div class="bg-light rounded-start" style="width: 7%;"></div>
+                <div class="p-3 mx-auto" style="width: 93%;">
+                    <div class="d-flex justify-content-between ">
+                        <div class="text-muted d-flex gap-1">
+                            {% if communuty_avatar_url %}
+                                <img class="border-0 p-0 rounded-circle" style="width: 1.5rem;height:1.5rem;" src="{{ communuty_avatar_url }}"/>
+                            {% else %}
+                                <div class="border-0 p-0 rounded-circle bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 1.5rem;height:1.5rem;">
+                                    <span style="font-size: 1rem;">{{ post.community.name|first }}</span>
+                                </div>
+                            {% endif %}
+                            <small><a class="link-secondary" href="{{ post.community.get_absolute_url }}">{{ post.community.name }}</a></small>
+                            <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+                        </div>
+                        {% if request.user == post.writer %}
+                            <div class="d-flex gap-2 fw-bold align-items-center" style="font-size:x-small;">
+                                <a href="{% url 'posts:update' pk=post.pk %}" class="btn btn-primary rounded-pill">Update</a>
+                                <form class="delete d-flex align-items-center mb-0" action="{% url 'posts:delete' pk=post.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger rounded-pill" type="submit">Delete</button>
+                                </form>
                             </div>
                         {% endif %}
-                        <small><a class="link-secondary" href="{{ post.community.get_absolute_url }}">{{ post.community.name }}</a></small>
-                        <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+                    </div>    
+                    <div class="card-body">
+                        <p class="card-text">{{ post.content|linebreaks }}</p>
                     </div>
-                    {% if request.user == post.writer %}
-                        <div class="d-flex gap-2 fw-bold align-items-center" style="font-size:x-small;">
-                            <a href="{% url 'posts:update' pk=post.pk %}" class="btn btn-primary rounded-pill">Update</a>
-                            <form class="delete d-flex align-items-center mb-0" action="{% url 'posts:delete' pk=post.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn btn-danger rounded-pill" type="submit">Delete</button>
-                            </form>
-                        </div>
+                    {% if post_photo_url %}
+                    <div class="w-100 d-flex justify-content-center">
+                        <img src="{{ post_photo_url }}" style="max-width: 400px;" alt="post_photo"/>
+                    </div>
                     {% endif %}
-                </div>    
-                <div class="card-body">
-                    <p class="card-text">{{ post.content }}</p>
                 </div>
-                {% if post_photo_url %}
-                    <img class="mx-auto" src="{{ post_photo_url }}" style="max-width: 400px;" alt="post_photo"/>
-                {% endif %}
             </div>
             <div class="card mb-1 py-2 mx-auto px-3">
                 {% include 'comments/create.html' with post=post %}
-                {% include 'comments/list.html' with post_pk=post.pk %}
+                {% include 'comments/list.html' with comments=comments %}
             </div>
         </div>
         <div class="bg-light rounded-3" style="width: 20rem; height: fit-content;">

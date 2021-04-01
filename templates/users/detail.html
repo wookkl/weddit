@@ -7,63 +7,50 @@
 
 {% block content %}
     {% get_avatar_url_or_none object=user_obj as user_obj_avatar_url %}
-    <div class="container d-flex gap-3 mx-auto justify-content-center mt-5">
-        <div class="infinite-container" style="max-width: 600px; width: 40rem;">
-            {% if user_obj.posts.count %}
-                {% for post in post_obj %}
-                <div class="infinite-item">
-                    {% include 'posts/card.html' with post=post %}
+    <div class="container d-flex gap-3 mx-auto justify-content-center mt-5" style="width: 60%;">
+        <div style="flex: 2;">
+            <ul class="nav mb-1 rounded-3 justify-content-start bg-white">
+                <li class="nav-item">
+                    <a class="nav-link border-bottom {% if type == 'post' or type == None %}active{% else %}text-dark{% endif %}" href="{{ user_obj.get_absolute_url }}?type=post">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link border-bottom {% if type == 'comment' %}active{% else %}text-dark{% endif %}" href="{{ user_obj.get_absolute_url }}?type=comment">Comments</a>
+                </li>
+            </ul>
+            {% if not paginated_objs %}
+                <div class="card text-center d-flex flex-column justify-content-center" style="height: 200;">
+                    <span>Sorry, there were no 
+                    {% if type != 'post' and type != 'comment' %}post{% else %}{{ type }}{% endif %}
+                     :(</span>
                 </div>
-                {% endfor %}
-                {% if post_obj.has_next %}
-                <a class="infinite-more-link btn btn-secondary" style="display: none;" href="?page={{ post_obj.next_page_number }}">More</a>
-                {% endif %}
-                <div class="spinner-border loading" style="width: 3rem; height: 3rem; display: none;" role="status">
-                <span class="visually-hidden">Loading...</span>
-                </div>
-            {% else %}
-            <div class="card text-center d-flex flex-column justify-content-center" style="height: 200;">
-                <span>Sorry, there were no posts :(</span>
-            </div>
+            {% elif type == 'comment'%}
+                {% include 'comments/list_classic.html' with comments=paginated_objs %}
+            {% elif type == 'post' or type == None %}
+                {% include 'posts/list.html' with posts=paginated_objs %}
             {% endif %}
         </div>
-        
-        <div>
-            <div class="bg-light rounded-3 border" style="width: 20rem; height: fit-content;">
-                <div class="btn-primary rounded-top pl-2 align-middle position-relative"  style="width: 30rem; height: 6rem; display: table-cell;">
-                    <div style="position: absolute; bottom: -1.5rem;">
-                    {% if user_obj_avatar_url %}
-                        <img class="border border-4 border-white img-thumbnail" style="width: 5rem;height:5rem;" src="{{ user_obj_avatar_url }}"/>
-                    {% else %}
-                        <div class="border border-4 border-white img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 5rem;height:5rem;"><span class="fs-2">{{user_obj.nickname|first}}</span></div>
-                    {% endif %}
+        <div class="d-flex flex-column gap-3" style="flex: 1;">
+            <div>
+                <div class="bg-light rounded-3 border" style="height: fit-content;">
+                    <div class="btn-primary rounded-top pl-2 align-middle position-relative"  style="width: 30rem; height: 6rem; display: table-cell;">
+                        <div style="position: absolute; bottom: -1.5rem;">
+                        {% if user_obj_avatar_url %}
+                            <img class="border border-4 border-white img-thumbnail" style="width: 5rem;height:5rem;" src="{{ user_obj_avatar_url }}"/>
+                        {% else %}
+                            <div class="border border-4 border-white img-thumbnail bg-secondary text-white fs-3 d-flex justify-content-center align-items-center" style="width: 5rem;height:5rem;"><span class="fs-2">{{user_obj.nickname|first}}</span></div>
+                        {% endif %}
+                        </div>
                     </div>
-                </div>
-                <div class="p-3 mt-2">
-                    <small>{{ user_obj.nickname }}</small>
-                    <div class="d-flex flex-column my-3">
-                        <big>{{ user_obj.posts.count }}</big>
-                        <small>Posts</small>
+                    <div class="p-3 mt-2">
+                        <small>{{ user_obj.nickname }}</small>
+                        <div class="d-flex flex-column my-3">
+                            <big>{{ user_obj.posts.count }}</big>
+                            <small>Posts</small>
+                        </div>
                     </div>
                 </div>
             </div>
+            {% include 'partials/about.html' %}
         </div>
-    </div>
-            
+    </div>  
 {% endblock content %}
-
-{% block javascript %}
-  <script>
-    var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-        $('.loading').show();
-    },  
-    onAfterPageLoad: function ($items) {
-        $('.loading').hide();
-    }
-    });
-  </script>
-{% endblock javascript %}
-
-

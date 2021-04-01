@@ -10,7 +10,10 @@ from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from posts.models import Post
+from subscriptions.models import Subscription
+from comments.models import Comment
 from core.views import get_form_errors
+
 from . import forms
 
 
@@ -72,21 +75,27 @@ def logout_view(request):
 def user_detail_view(request, nickname):
     """User detail view"""
     if request.method == "GET":
+        typee = request.GET.get("type", None)
+        page = request.GET.get("page", 1)
         try:
             user = get_user_model().objects.get(nickname=nickname)
-            posts = Post.objects.filter(writer=user).order_by("-id")
-            page = request.GET.get("page", 1)
-            paginator = Paginator(posts, 5)
+            if typee == "comment":
+                objects = Comment.objects.filter(writer=user).order_by("-id")
+                per_page = 15
+            else:
+                objects = Post.objects.filter(writer=user).order_by("-id")
+                per_page = 5
+            paginator = Paginator(objects, per_page)
             try:
-                paginated_posts = paginator.page(page)
+                paginated_objs = paginator.page(page)
             except PageNotAnInteger:
-                paginated_posts = paginator.page(1)
+                paginated_objs = paginator.page(1)
             except EmptyPage:
-                paginated_posts = paginator.page(paginator.num_pages)
+                paginated_objs = paginator.page(paginator.num_pages)
             return render(
                 request,
                 "users/detail.html",
-                {"user_obj": user, "post_obj": paginated_posts},
+                {"user_obj": user, "paginated_objs": paginated_objs, "type": typee},
             )
         except get_user_model().DoesNotExist:
             return redirect("home")

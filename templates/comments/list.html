@@ -1,6 +1,13 @@
-{% block content %}
-    {% for comment in post.comments.all %}
-        {% include 'comments/detail.html' with pk=comment.pk %}
+<div class="infinite-container">
+    {% for comment in comments %}
+        <div class="infinite-item bg-white mb-3">
+            {% include 'comments/detail.html' with pk=comment.pk %}
+        </div>
     {% endfor %}    
-{% endblock content %}
-    
+</div>
+{% if comments.has_next %}
+    <a class="infinite-more-link btn btn-secondary" style="display: none;" href="?page={{ comments.next_page_number }}&type={{ type }}">More</a>
+{% endif %}
+<div class="spinner-border loading" style="width: 3rem; height: 3rem; display: none;" role="status">
+    <span class="visually-hidden">Loading...</span>
+</div>
