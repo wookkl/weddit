@@ -25,7 +25,9 @@ class Command(BaseCommand):
         for _ in range(number):
             comment = Comment.objects.create(
                 comment=seeder.faker.text(),
-                writer=users[random.randint(0, len(users) - 1)],
-                post=posts[random.randint(0, len(posts) - 1)],
+                writer=random.choice(users),
+                post=random.choice(posts),
             )
             comment.save()
+
+        self.stdout.write(self.style.SUCCESS(f"{number} comments created!"))

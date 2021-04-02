@@ -1,8 +1,11 @@
+import random
+
 from django.db.utils import IntegrityError
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
-from faker import Faker
+from communities.models import Community
+from subscriptions.models import Subscription
 
 
 class Command(BaseCommand):
@@ -15,20 +18,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         number = int(options.get("number"))
-        fake = Faker()
+        users = get_user_model().objects.all()
+        communities = Community.objects.all()
         c = 0
         for _ in range(number):
-            email = fake.email()
-            nickname = fake.first_name()
-            password = fake.password(length=10, special_chars=False, upper_case=False)
+            user = random.choice(users)
+            community = random.choice(communities)
             try:
-                get_user_model().objects.create_user(
-                    email=email,
-                    nickname=nickname,
-                    password=password,
-                )
+                Subscription.objects.create(subscriber=user, community=community)
             except IntegrityError:
                 continue
             c += 1
-
-        self.stdout.write(self.style.SUCCESS(f"{c} users created!"))
+        self.stdout.write(self.style.SUCCESS(f"{c} subscriptions created!"))
