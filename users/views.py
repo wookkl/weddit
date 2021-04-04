@@ -120,7 +120,10 @@ def update_email_view(request):
     elif request.method == "GET":
         form = forms.UpdateEmailForm(user=request.user)
     return render(
-        request, "users/update.html", {"form": form, "errors": errors}, status=200
+        request,
+        "users/update.html",
+        {"form": form, "errors": errors, "cta": "email"},
+        status=200,
     )
 
 
@@ -137,7 +140,10 @@ def update_nickname_view(request):
     elif request.method == "GET":
         form = forms.UpdateNicknameForm(user=request.user)
     return render(
-        request, "users/update.html", {"form": form, "errors": errors}, status=200
+        request,
+        "users/update.html",
+        {"form": form, "errors": errors, "cta": "nickname"},
+        status=200,
     )
 
 
@@ -154,7 +160,10 @@ def update_password_view(request):
     elif request.method == "GET":
         form = forms.UpdatePasswordForm(user=request.user)
     return render(
-        request, "users/update.html", {"form": form, "errors": errors}, status=200
+        request,
+        "users/update.html",
+        {"form": form, "errors": errors, "cta": "password"},
+        status=200,
     )
 
 
@@ -168,7 +177,10 @@ def update_avatar_view(request):
         return redirect(USER_SETTINGS_URL)
     form = forms.UpdateAvatarForm()
     return render(
-        request, "users/update.html", {"form": form, "errors": errors}, status=200
+        request,
+        "users/update.html",
+        {"form": form, "errors": errors, "cta": "avatar"},
+        status=200,
     )
 
 
@@ -188,5 +200,8 @@ def user_delete_view(request):
     elif request.method == "GET":
         form = forms.DeleteAccountForm(user=request.user)
     return render(
-        request, "users/delete.html", {"form": form, "errors": errors}, status=200
+        request,
+        "users/delete.html",
+        {"form": form, "errors": errors, "cta": "account"},
+        status=200,
     )

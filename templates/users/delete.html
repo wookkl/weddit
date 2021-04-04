@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'mixins/form.html' %}
 
 {% block page_title %}
     Delete account
 {% endblock page_title %}
+
+{% block form_header %}
+    <h3>Delete {{ cta }}</h3>
+    <p style="max-width: 400px;"class="text-danger">Warnng: Account deletion cannot be undone. If you're absolutely sure you want to delete youa account. enter your password to continue</p>
+{% endblock form_header %}
     
-{% block content %} 
-<div class="d-flex flex-column justify-content-center align-items-middle" style="min-height: 70vh;">
-    <div class="container d-flex flex-column justify-content-center align-items-center h-50 w-25">
-        <p class="text-danger">Warnng: Account deletion cannot be undone. If you're absolutely sure you want to delete youa account. enter your password to continue</p>
-        {% include 'mixins/form.html' with form=form cta="Delete my account" %}
-    </div>
-</div>
-{% endblock content %}
+{% block form_submit %}
+    <input class="btn btn-danger mt-1" type="submit" value="Delete my account">
+{% endblock form_submit %}

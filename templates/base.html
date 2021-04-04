@@ -65,5 +65,30 @@
         $(document).on('click', '.delete', function(){
             return confirm('Are you sure you want to delete this?');
             })
+        function paintAbout(){
+            const links = [
+                "Help",
+                "Weddit App",
+                "Weddit Coins",
+                "Weddit Premium",
+                "Weddit Gifts",
+                "Communities",
+                "ReWeddit",
+                "Topics",
+                "About",
+                "Careers",
+                "Press",
+                "Advertise",
+                "Blog",
+                "Terms",
+                "Content Policy",
+                "Privacy Policy",
+            ]
+            links.forEach(element => {
+                $("#about").append('<span class="col mb-1">'+element+'</span>');
+            });
+
+	    }
+        paintAbout();
     </script>
 </html>
