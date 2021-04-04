@@ -50,6 +50,7 @@ THRID_PARTY_APPS = [
     "django_seed",
     "ckeditor",
     "ckeditor_uploader",
+    "storages",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THRID_PARTY_APPS + PROJECT_APPS

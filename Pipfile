@@ -16,6 +16,9 @@ django-seed = "*"
 django-ckeditor = "*"
 model-bakery = "*"
 python-dotenv = "*"
+sentry-sdk = "*"
+django-storages = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.8"
