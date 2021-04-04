@@ -1,19 +1,29 @@
-from django.urls import reverse
-from django.shortcuts import redirect
-from django.http import HttpResponseBadRequest
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.translation import gettext as _
-from django.views.generic.edit import FormMixin
+from django.core.cache import cache
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponseBadRequest
+from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
+from django.urls import reverse
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic.edit import FormMixin
 
 from .models import Post
 from .forms import PostCreateForm, PostUpdateForm
 from .decorators import post_ownership_required
 
 from comments.forms import CommentForm
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip
 
 
 class PostListView(ListView):
@@ -93,6 +103,24 @@ class PostDetailView(FormMixin, DetailView):
     )
     paginate_by = 10
 
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        user_ip = get_client_ip(request)
+        cached_visitors_key = f"post_{post.pk}_visitors_"
+        post_visitors_keys = cache.keys(cached_visitors_key + "*")
+        if post_visitors_keys:
+            ips = [cache.get(key) for key in post_visitors_keys]
+            if user_ip not in ips:
+                post.hits += 1
+                post.save()
+                cache.set(f"{cached_visitors_key}{post.hits}", user_ip, timeout=60 * 60)
+        else:
+            post.hits += 1
+            post.save()
+            cache.set(f"{cached_visitors_key}{post.hits}", user_ip, timeout=60 * 60)
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comments = self.get_related_comments()
@@ -119,6 +147,10 @@ def post_delete_view(request, pk):
         try:
             post = Post.objects.get(pk=pk)
             post.delete()
+            cached_visitors_key = f"post_{pk}_visitors_"
+            post_visitors_keys = cache.keys(cached_visitors_key + "*")
+            if post_visitors_keys:
+                cache.delete_pattern(post_visitors_keys)
         except Post.DoesNotExist:
             return HttpResponseBadRequest()
         return redirect(reverse("home"))

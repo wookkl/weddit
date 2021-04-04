@@ -13,7 +13,7 @@
         </div>
         <div class="d-flex flex-column">
             <span style="font-size: 0.9rem;">{{ post.content|truncatechars:80 }}</span>
-            <div class="text-muted d-flex align-items-baseline"  style="font-size: 0.8rem;">
+            <div class="text-muted d-flex align-items-baseline gap-2"  style="font-size: 0.8rem;">
                 <span><a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a></span>
                 {% if request.user.is_authenticated %}
                     <div class="mx-2">   
@@ -30,6 +30,7 @@
                     </div>
                 {% endif %}
                 <span> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</span>
+                <span>{{ post.get_hits_count }} views</span>
             </div>
             <div class="d-flex text-muted" >
                 <button style="font-size: 0.8rem;" type="button" class="btn btn-outline-secondary d-flex gap-1 align-items-baseline  border-0 rounded-0">

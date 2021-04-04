@@ -32,6 +32,7 @@
               {% endif %}
               <small><a class="link-secondary" href="{{ post.community.get_absolute_url }}">{{ post.community.name }}</a></small>
               <small> • Posted by <a class="link-secondary" href="{% url 'user:detail' post.writer.nickname %}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+              <small>{{ post.get_hits_count }} views</small>
             </div>
             {% if request.user == post.writer %}
               <div class="d-flex gap-2 fw-bold align-items-center" style="font-size:x-small;">

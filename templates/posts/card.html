@@ -25,7 +25,8 @@
                 <small>
                     <a class="link-secondary" href="{% url 'communities:detail' post.community.slug %}">{{ post.community.name }}</a>
                 </small>
-                <small> • Posted by <a class="link-secondary" href="{{ post.writer.get_absolute_url }}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+                <small>• Posted by <a class="link-secondary" href="{{ post.writer.get_absolute_url }}">{{ post.writer.nickname }}</a> {{ post.get_created_time }}</small>
+                <small>{{ post.get_hits_count }} views</small>
             </div>
             {% if request.user.is_authenticated %}
                 {% is_subscribed subscriber=request.user community=post.community as is_subscribed%}

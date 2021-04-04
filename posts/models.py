@@ -13,6 +13,7 @@ class Post(AbstractTimeStamp):
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     photo = models.ImageField(null=True, upload_to="photos/posts/", blank=True)
+    hits = models.IntegerField(default=0)
 
     def get_photo_url(self):
         return self.photo.url
@@ -25,6 +26,9 @@ class Post(AbstractTimeStamp):
 
     def __str__(self):
         return f"{self.writer}'s post"
+
+    def get_hits_count(self):
+        return self._get_count(self.hits)
 
     def get_vote_score(self):
         votes = self.votes.all()

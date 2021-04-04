@@ -2,6 +2,7 @@ from config.settings.base import *
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = ["weddit.eba-be3gdpu7.ap-northeast-2.elasticbeanstalk.com"]
@@ -16,6 +17,21 @@ DATABASES = {
         "HOST": os.environ["RDS_HOSTNAME"],
         "NAME": os.environ["RDS_DB_NAME"],
         "PORT": os.environ["RDS_PORT"],
+    }
+}
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": [
+            os.environ["REDIS_LOCATION_PRIMARY"],
+            os.environ["REDIS_LOCATION_REPLICA"],
+        ],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MASTER_CACHE": os.environ["REDIS_LOCATION_PRIMARY"],
+        },
     }
 }
 
