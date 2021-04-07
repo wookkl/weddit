@@ -1,7 +1,11 @@
+import datetime
+
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
 from communities.models import Community
@@ -42,9 +46,20 @@ def form_errors_iter(form):
 def home_view(request):
     """Home view"""
 
-    posts = Post.objects.all().order_by("-created_at")
+    posts = (
+        Post.objects.all().
+        order_by("-created_at").
+        select_related("community").
+        prefetch_related("comments")
+    )
+    trending_posts = (
+        posts.filter(created_at__gte=timezone.now() - datetime.timedelta(days=1))
+        .order_by("-hits")[:5]
+    )
+
     page = request.GET.get("page", 1)
     paginator = Paginator(posts, 5)
+
     try:
         paginated_posts = paginator.page(page)
     except PageNotAnInteger:
@@ -57,7 +72,11 @@ def home_view(request):
     return render(
         request,
         "home.html",
-        {"communities": community_obj, "posts": paginated_posts},
+        {
+            "communities": community_obj,
+            "posts": paginated_posts,
+            "trending_posts": trending_posts,
+        },
     )
 
 

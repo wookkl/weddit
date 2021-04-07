@@ -13,6 +13,18 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MASTER_CACHE": os.environ["REDIS_LOCATION_PRIMARY"],
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+        },
+    }
+}
+
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
