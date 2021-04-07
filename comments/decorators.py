@@ -10,11 +10,12 @@ def comment_ownership_required(func):
     """Comment ownership requirement decorator definition"""
 
     @wraps(func)
-    def decorated(request, pk):
+    def wrapper(request, pk):
         comment = Comment.objects.get(pk=pk)
         if comment.writer != request.user:
             return HttpResponseBadRequest()
-        wrapped = login_required(func(request, pk))
-        return wrapped
 
-    return decorated
+        wrapped = login_required(func)
+        return wrapped(request, pk)
+
+    return wrapper

@@ -8,11 +8,17 @@
 <div class="d-flex mt-5 flex-column mx-auto gap-3 align-items-center" style="width: 990px;">
   <div style="width: 100%;">
     <small class="d-block mb-2">Trending posts</small>
-    <div class="d-flex gap-2 justify-content-start">
-      {% for trend_post in trending_posts %}
-        {% include 'posts/trending_card.html' with post=trend_post %}
-      {% endfor %}
-    </div>
+    {% if trending_posts %}
+      <div class="d-flex gap-2 justify-content-start">
+        {% for trend_post in trending_posts %}
+          {% include 'posts/trending_card.html' with post=trend_post %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="height: 180px; rounded-3" class="bg-white d-flex justify-content-center align-items-center">
+        <span class="fs-3">Sorry. There are no trendy posts yet. :(</span>
+      </div>
+    {% endif %}
   </div>
   <small class="d-block mb-2 w-100" >Lastest posts</small>
   <div class="d-flex justify-content-between w-100">
