@@ -31,6 +31,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "MASTER_CACHE": os.environ["REDIS_LOCATION_PRIMARY"],
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
         },
     }
 }

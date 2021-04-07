@@ -20,14 +20,18 @@ class Command(BaseCommand):
         users = get_user_model().objects.all()
         posts = Post.objects.all()
         c = 0
+
         for _ in range(number):
             user = random.choice(users)
             post = random.choice(posts)
             exists = Vote.objects.filter(voter=user, post=post).exists()
+
             if exists:
                 continue
+
             Vote.objects.create(
                 voter=user, post=post, like=random.choice([True, False])
             )
             c += 1
+
         self.stdout.write(self.style.SUCCESS(f"{c} votes created!"))

@@ -1,13 +1,14 @@
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView, DetailView
-from django.views.generic.list import MultipleObjectMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
+from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic.list import MultipleObjectMixin
 
+from core.views import form_errors_iter
 from posts.models import Post
-from .models import Community
+
 from .forms import CommunityForm
+from .models import Community
 
 
 class CommunityListView(ListView):
@@ -23,9 +24,7 @@ class CommunityListView(ListView):
     context_object_name = "communities"
 
 
-@method_decorator(login_required, "get")
-@method_decorator(login_required, "post")
-class CommunityCreateView(CreateView, SuccessMessageMixin):
+class CommunityCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
     """Community create view definition"""
 
     model = Community
@@ -39,10 +38,7 @@ class CommunityCreateView(CreateView, SuccessMessageMixin):
         return kwargs
 
     def form_invalid(self, form):
-        errors = []
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+        errors = list(form_errors_iter(form))
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 

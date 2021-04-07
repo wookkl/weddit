@@ -61,12 +61,13 @@ class PublicCommentTests(TestCase):
 
     def test_auth_required(self):
         """Test that authentication is required"""
+
         payload = {"comment": "test comment"}
         res = self.client.post(CREATE_COMMENT_URL, payload)
 
         self.assertRedirects(
             res,
-            settings.LOGIN_URL + f"?next=/comments/create/",
+            settings.LOGIN_URL + "?next=/comments/create/",
         )
 
         with self.assertRaises(Comment.DoesNotExist):

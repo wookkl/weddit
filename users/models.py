@@ -1,13 +1,13 @@
-from django.db import models
-from django.urls import reverse
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
-
-from .managers import CustomUserManager
+from django.db import models
+from django.urls import reverse
 
 from core.validators import alphanumeric_validator
+
+from .managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):

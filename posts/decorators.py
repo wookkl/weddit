@@ -1,3 +1,6 @@
+from functools import wraps
+
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 
 from .models import Post
@@ -6,10 +9,12 @@ from .models import Post
 def post_ownership_required(func):
     """Post ownership requirement decorator definition"""
 
-    def decorated(request, *args, **kwargs):
-        post = Post.objects.get(pk=kwargs["pk"])
+    @wraps(func)
+    def decorated(request, pk):
+        post = Post.objects.get(pk=pk)
         if post.writer != request.user:
-            return HttpResponseBadRequest
-        return func(request, *args, **kwargs)
+            return HttpResponseBadRequest()
+        wrapped = login_required(func(request, pk))
+        return wrapped
 
     return decorated

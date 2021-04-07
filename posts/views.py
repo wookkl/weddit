@@ -1,20 +1,21 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from django.views.generic.edit import FormMixin
 
-from .models import Post
-from .forms import PostCreateForm, PostUpdateForm
-from .decorators import post_ownership_required
-
 from comments.forms import CommentForm
+from core.views import form_errors_iter
+
+from .decorators import post_ownership_required
+from .forms import PostCreateForm, PostUpdateForm
+from .models import Post
 
 
 def get_client_ip(request):
@@ -24,6 +25,17 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def caching_user_ip(post, user_ip):
+    cached_visitors_key = f"post_{post.pk}_visitors_"
+    post_visitors_keys = cache.keys(cached_visitors_key + "*")
+    ips = [cache.get(key) for key in post_visitors_keys]
+
+    if user_ip not in ips:
+        post.hits += 1
+        post.save()
+        cache.set(f"{cached_visitors_key}{post.hits}", user_ip, timeout=60 * 60)
 
 
 class PostListView(ListView):
@@ -37,9 +49,7 @@ class PostListView(ListView):
     http_method_names = ["get"]
 
 
-@method_decorator(login_required, "get")
-@method_decorator(login_required, "post")
-class PostCreateView(SuccessMessageMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """Post create view definition"""
 
     model = Post
@@ -61,16 +71,11 @@ class PostCreateView(SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        errors = []
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+        errors = list(form_errors_iter(form))
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
-@method_decorator(login_required, "get")
-@method_decorator(login_required, "post")
-class PostUpdateView(SuccessMessageMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """Post update view definition"""
 
     model = Post
@@ -84,10 +89,7 @@ class PostUpdateView(SuccessMessageMixin, UpdateView):
         return form_class(user=self.request.user, **self.get_form_kwargs())
 
     def form_invalid(self, form):
-        errors = []
-        for key in form.errors.as_data().keys():
-            for error in form.errors.as_data()[key]:
-                errors.append(error.message)
+        errors = list(form_errors_iter(form))
         return self.render_to_response(self.get_context_data(form=form, errors=errors))
 
 
@@ -106,19 +108,7 @@ class PostDetailView(FormMixin, DetailView):
     def get(self, request, *args, **kwargs):
         post = self.get_object()
         user_ip = get_client_ip(request)
-        cached_visitors_key = f"post_{post.pk}_visitors_"
-        post_visitors_keys = cache.keys(cached_visitors_key + "*")
-        if post_visitors_keys:
-            ips = [cache.get(key) for key in post_visitors_keys]
-            if user_ip not in ips:
-                post.hits += 1
-                post.save()
-                cache.set(f"{cached_visitors_key}{post.hits}", user_ip, timeout=60 * 60)
-        else:
-            post.hits += 1
-            post.save()
-            cache.set(f"{cached_visitors_key}{post.hits}", user_ip, timeout=60 * 60)
-
+        caching_user_ip(post, user_ip)
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -140,19 +130,17 @@ class PostDetailView(FormMixin, DetailView):
         return comments
 
 
-@login_required
 @post_ownership_required
+@require_http_methods(["POST"])
 def post_delete_view(request, pk):
-    if request.method == "POST":
-        try:
-            post = Post.objects.get(pk=pk)
-            post.delete()
-            cached_visitors_key = f"post_{pk}_visitors_"
-            post_visitors_keys = cache.keys(cached_visitors_key + "*")
-            if post_visitors_keys:
-                cache.delete_pattern(post_visitors_keys)
-        except Post.DoesNotExist:
-            return HttpResponseBadRequest()
-        return redirect(reverse("home"))
-    else:
+    try:
+        post = Post.objects.get(pk=pk)
+        post.delete()
+        cached_visitors_key = f"post_{pk}_visitors_"
+        post_visitors_keys = cache.keys(cached_visitors_key + "*")
+        if post_visitors_keys:
+            cache.delete_pattern(post_visitors_keys)
+    except Post.DoesNotExist:
         return HttpResponseBadRequest()
+
+    return redirect(reverse("home"))

@@ -32,6 +32,7 @@ class AbstractTimeStamp(models.Model):
             return f"{count / 1000000:.2f}".rstrip("0").rstrip(".") + "m"
         elif abs(count) >= 1000:
             return f"{count / 1000:.2f}".rstrip("0").rstrip(".") + "k"
+
         return f"{count}"
 
     class Meta:

@@ -1,9 +1,9 @@
-from django.urls import reverse_lazy
-from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
+from django.views.decorators.http import require_http_methods
 
 from .forms import CommentForm
 from .models import Comment
@@ -12,9 +12,7 @@ from .decorators import comment_ownership_required
 from posts.models import Post
 
 
-@method_decorator(login_required, "get")
-@method_decorator(login_required, "post")
-class CreateCommentView(CreateView):
+class CreateCommentView(LoginRequiredMixin, CreateView):
     """Create comment view definition"""
 
     form_class = CommentForm
@@ -35,15 +33,18 @@ class CreateCommentView(CreateView):
             parent = Comment.objects.get_or_none(pk=parent_pk)
         else:
             parent = None
+
         comment.parent = parent
         comment.post = get_object_or_404(Post, pk=self.request.POST["post_pk"])
         comment.writer = self.request.user
         comment.save()
+
         if not self.request.user.can_create_community:
             if self.request.user.posts.count() >= 20:
                 if self.request.user.comments.count() >= 100:
                     self.request.user.can_create_community = True
                     self.request.user.save()
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -57,16 +58,14 @@ class CommentDetailView(DetailView):
     template_name = "comments/detail.html"
 
 
-@login_required
 @comment_ownership_required
+@require_http_methods(["POST"])
 def comment_delete_view(request, pk):
     nxt = request.GET.get("next", None)
-    if request.method == "POST":
-        try:
-            comment = Comment.objects.get(pk=pk)
-            comment.delete()
-            if nxt:
-                return redirect(nxt)
-        except comment.DoesNotExist:
-            return HttpResponseBadRequest()
-    return HttpResponseBadRequest()
+    try:
+        comment = Comment.objects.get(pk=pk)
+        comment.delete()
+        if nxt:
+            return redirect(nxt)
+    except comment.DoesNotExist:
+        return HttpResponseBadRequest()

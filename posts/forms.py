@@ -1,20 +1,15 @@
 from django import forms
 
-from .models import Post
 from communities.models import Community
+
+from .models import Post
 
 
 class PostForm(forms.ModelForm):
     """Post form definition"""
 
     content = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "placeholder": "CONTENT",
-                "rows": 9,
-                "cols": 150,
-            }
-        )
+        widget=forms.Textarea(attrs={"placeholder": "CONTENT", "rows": 9, "cols": 150})
     )
     photo = forms.ImageField(required=False)
 

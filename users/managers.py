@@ -17,12 +17,14 @@ class CustomUserManager(BaseUserManager):
         """Return a base user"""
         if not email:
             raise ValidationError("Email does not exist")
+
         user = self.model(
             email=self.normalize_email(email),
             nickname=self.normalize_nickname(nickname),
         )
         user.set_password(password)
         user.save(using=self._db)
+
         return user
 
     def create_user(self, email, nickname, password=None):

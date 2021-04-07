@@ -21,12 +21,16 @@ class Command(BaseCommand):
         users = get_user_model().objects.all()
         communities = Community.objects.all()
         c = 0
+
         for _ in range(number):
             user = random.choice(users)
             community = random.choice(communities)
+
             try:
                 Subscription.objects.create(subscriber=user, community=community)
             except IntegrityError:
                 continue
+
             c += 1
+
         self.stdout.write(self.style.SUCCESS(f"{c} subscriptions created!"))

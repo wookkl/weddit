@@ -13,6 +13,7 @@ def get_error_fields_already_exists(*fields):
 
 def get_error_fields_not_match(*fields):
     """Return FIELDS + do not"""
+
     list_field = [*fields]
     string_fields = ", ".join(list_field)
     plural = "es" if len(list_field) > 1 else ""

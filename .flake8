@@ -1,4 +1,4 @@
 [flake8]
 exclude = manage.py,
-        settings.py
+        config/settings/
 ignore = E501, W503

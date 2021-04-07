@@ -33,6 +33,7 @@ class CustomUserCreateForm(forms.Form):
         is_exist = get_user_model().objects.filter(email=email).exists()
         if is_exist:
             raise get_error_fields_already_exists("email")
+
         return email
 
     def clean_nickname(self):
@@ -40,6 +41,7 @@ class CustomUserCreateForm(forms.Form):
         is_exist = get_user_model().objects.filter(nickname=nickname.lower())
         if is_exist:
             raise get_error_fields_already_exists("nickname")
+
         return nickname
 
     def clean_password2(self):
@@ -47,6 +49,7 @@ class CustomUserCreateForm(forms.Form):
         password2 = self.cleaned_data["password2"]
         if password1 != password2:
             raise get_error_fields_not_match("password")
+
         password_validation.validate_password(password2)
         return password2
 
@@ -77,6 +80,7 @@ class LoginForm(forms.Form):
         password = self.cleaned_data.get("password")
         try:
             user = get_user_model().objects.get(email=email)
+
             if user.check_password(password):
                 return self.cleaned_data
             else:
@@ -103,12 +107,14 @@ class UpdateEmailForm(forms.Form):
         is_exist = get_user_model().objects.filter(email=new_email).exists()
         if is_exist:
             raise get_error_fields_already_exists("email")
+
         return new_email
 
     def clean_password(self):
         password = self.cleaned_data["password"]
         if not self.user.check_password(password):
             raise get_error_fields_not_match
+
         password_validation.validate_password(password)
         return password
 
@@ -136,6 +142,7 @@ class UpdateNicknameForm(forms.Form):
         is_exist = get_user_model().objects.filter(nickname=new_nickname).exists()
         if is_exist:
             raise get_error_fields_already_exists("nickname")
+
         return new_nickname
 
     def save(self, commit=True):
@@ -173,6 +180,7 @@ class UpdatePasswordForm(forms.Form):
         current_password = self.cleaned_data["current_password"]
         if not self.user.check_password(current_password):
             raise get_error_fields_not_match("password")
+
         return current_password
 
     def clean_password2(self):
@@ -180,6 +188,7 @@ class UpdatePasswordForm(forms.Form):
         password2 = self.cleaned_data["password2"]
         if password1 != password2:
             raise get_error_fields_not_match("new password", "confirm password")
+
         password_validation.validate_password(password2)
         return password2
 
@@ -203,6 +212,7 @@ class DeleteAccountForm(forms.Form):
         password = self.cleaned_data["password"]
         if not self.user.check_password(password):
             raise get_error_fields_not_match("password")
+
         return password
 
     def save(self, commit=True):

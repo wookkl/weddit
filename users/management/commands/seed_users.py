@@ -17,10 +17,12 @@ class Command(BaseCommand):
         number = int(options.get("number"))
         fake = Faker()
         c = 0
+
         for _ in range(number):
             email = fake.email()
             nickname = fake.first_name()
             password = fake.password(length=10, special_chars=False, upper_case=False)
+
             try:
                 get_user_model().objects.create_user(
                     email=email,
@@ -29,6 +31,7 @@ class Command(BaseCommand):
                 )
             except IntegrityError:
                 continue
+
             c += 1
 
         self.stdout.write(self.style.SUCCESS(f"{c} users created!"))
